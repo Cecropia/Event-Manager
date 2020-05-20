@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Integration
+namespace EventManager.Integration
 {
     public static class EventManagerMiddlewareExtensions
     {

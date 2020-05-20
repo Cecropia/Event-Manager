@@ -1,4 +1,4 @@
-namespace Integration
+namespace EventManager.Integration
 {
     public interface ITestService
     {

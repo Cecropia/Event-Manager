@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Integration
+namespace EventManager.Integration
 {
     public class EventManagerMiddleware
     {
