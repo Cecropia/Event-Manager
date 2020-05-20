@@ -1,0 +1,28 @@
+{
+	"name": "Devcontainer for EventManager",
+	"dockerFile": "Dockerfile",
+
+	"appPort": [5000, 5001],
+
+	"settings": { 
+		"terminal.integrated.shell.linux": "/bin/bash"
+	},
+
+	"mounts": [
+		"source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind"
+	],
+	"remoteEnv": {
+		"ASPNETCORE_Kestrel__Endpoints__Http__Url": "http://*:5000"
+	},
+
+	"remoteUser": "vscode",	
+
+	"extensions": [
+		"ms-dotnettools.csharp",
+		"jchannon.csharpextensions",
+		"k--kato.docomment",
+		"gruntfuggly.todo-tree",
+		"visualstudioexptteam.vscodeintellicode",
+		"wmaurer.change-case"
+	]
+}
