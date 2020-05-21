@@ -19,7 +19,11 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && apt-get clean -y
 
-ENV PATH="/home/vscode/.dotnet/tools:${PATH}"
+# Obtain 'Just' executable
+RUN mkdir -p /home/vscode/.local/bin && \
+    curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /home/vscode/.local/bin
+
+ENV PATH="/home/vscode/.dotnet/tools:/home/vscode/.local/bin:${PATH}"
 ENV EDITOR="nano"
 
 ENV DEBIAN_FRONTEND=dialog
