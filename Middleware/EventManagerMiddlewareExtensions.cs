@@ -14,7 +14,7 @@ namespace EventManager.Integration
 
         public static IServiceCollection ConfigureCecEventManager(this IServiceCollection services)
         {
-            //return services.AddTransient<ServiceToInvoke>();
+            //return services.AddTransient<ITestService, TestService>();
             return null;
         }
     }
