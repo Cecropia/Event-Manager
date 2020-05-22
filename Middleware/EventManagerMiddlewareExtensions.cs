@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
-namespace EventManager.Integration
+namespace EventManager.Middleware
 {
     public static class EventManagerMiddlewareExtensions
     {
@@ -14,7 +13,8 @@ namespace EventManager.Integration
 
         public static IServiceCollection ConfigureCecEventManager(this IServiceCollection services)
         {
-            return services.AddTransient<ITestService, TestService>();
+            //return services.AddTransient<ITestService, TestService>();
+            return null;
         }
     }
 }
