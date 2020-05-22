@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -17,10 +17,10 @@ namespace EventManager.Integration
         }
 
         // IMyScopedService is injected into Invoke
-        public async Task InvokeAsync(HttpContext httpContext, ITestService svc)
+        public async Task InvokeAsync(HttpContext httpContext)
         {
-            svc.somee = 100;
-            Console.WriteLine(svc.DoubleMessage("someMessage"));
+            //svc.somee = 100;
+            //Console.WriteLine(svc.DoubleMessage("someMessage"));
 
             // Call the next delegate/middleware in the pipeline
             await _next(httpContext);
