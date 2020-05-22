@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace EventManager.Integration.Entities
+namespace EventManager.BusinessLogic.Entities
 {
     public class Subscription
     {
