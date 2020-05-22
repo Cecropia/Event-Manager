@@ -18,8 +18,4 @@
     <PackageReference Include="System.Text.Json" Version="4.6.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="BusinessLogic\Services\" />
-  </ItemGroup>
-
 </Project>
