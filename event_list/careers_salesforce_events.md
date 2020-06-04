@@ -54,6 +54,24 @@ Event description example
 
 ```
 
+``` json
+
+{  
+  "name":"EventStringName", 
+  "payload": {
+    "Payload":[
+        // expected list of elements
+        // same format as the entity ENDPOINT
+    ],
+    "timestamp": "2020-05-22T21:28:06.496Z",
+    "extraParams": {"name": "value"}, // extra parameters if needed
+  }
+} 
+
+
+
+```
+
 ---
 ---
 
