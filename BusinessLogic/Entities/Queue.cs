@@ -30,7 +30,7 @@ namespace EventManager.BusinessLogic.Entities
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
-                .WriteTo.File("log-queue.txt")
+                .WriteTo.Debug()
                 .CreateLogger();
 
 

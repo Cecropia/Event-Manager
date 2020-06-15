@@ -1,5 +1,7 @@
+using EventManager.BusinessLogic.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace EventManager.Middleware
 {
@@ -14,7 +16,8 @@ namespace EventManager.Middleware
         public static IServiceCollection ConfigureCecEventManager(this IServiceCollection services)
         {
             //return services.AddTransient<ITestService, TestService>();
-            return null;
+            services.TryAddSingleton(EventDispatcher.Instance);
+            return services;
         }
     }
 }
