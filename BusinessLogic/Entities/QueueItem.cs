@@ -1,6 +1,6 @@
 using System;
 using System.Net;
-using System.Xml;
+using System.Threading;
 
 namespace EventManager.BusinessLogic.Entities
 {
@@ -12,5 +12,6 @@ namespace EventManager.BusinessLogic.Entities
         public HttpStatusCode Status { get; set; }
         public DateTime Timestamp { get; set; }
         public DateTime LastTry { get; set; }
+        public int Tries { get; set; }
     }
 }
