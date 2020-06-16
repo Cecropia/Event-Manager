@@ -11,10 +11,12 @@ namespace EventManager.Middleware
     public class EventManagerMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly EventDispatcher EventDispatcher;
 
         public EventManagerMiddleware(RequestDelegate next)
         {
             _next = next;
+            EventDispatcher = EventDispatcher.Instance;
         }
 
         // IMyScopedService is injected into Invoke
@@ -26,8 +28,7 @@ namespace EventManager.Middleware
 
             if (("post" == method) && (path == EventManagerConstants.EventReceptionPath))
             {
-                string responseBody = new StreamReader(httpContext.Request.Body).ReadToEnd();
-                httpContext.Request.Body.Position = 0;
+                string responseBody = await new StreamReader(httpContext.Request.Body).ReadToEndAsync();
 
                 JObject json = JObject.Parse(responseBody);
 
@@ -38,6 +39,8 @@ namespace EventManager.Middleware
                     Payload = json["Payload"] as JObject,
                     ExtraParams = json["ExtraParams"] as JObject,
                 };
+
+                EventDispatcher.Dispatch(e);
 
                 httpContext.Response.StatusCode = 200;
             }
