@@ -10,4 +10,4 @@ pipelines:
           script:
             - dotnet restore event-manager.sln
             - dotnet build event-manager.sln --configuration Release
-            - dotnet test event-manager.sln
+            - dotnet test event-manager.sln --logger "junit;LogFilePath=test-results/junit.xml"
