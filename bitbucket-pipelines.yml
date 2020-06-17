@@ -1,0 +1,13 @@
+image: cecropia/dotnet-with-zip:3.1
+
+pipelines:
+  pull-requests:
+    "*":
+      - step:
+          name: Build and test
+          caches:
+            - dotnetcore
+          script:
+            - dotnet restore
+            - dotnet build event-manager.sln --configuration Release
+            - dotnet test event-manager.sln
