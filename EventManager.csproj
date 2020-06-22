@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;</TargetFrameworks>
     <RootNamespace>EventManager</RootNamespace>
     <PackageId>Cecropia.Utilities.EventManager</PackageId>
-    <Version>1.0.2.1</Version>
+    <Version>1.0.2.2</Version>
     <Authors>Cecropia</Authors>
     <Company>Cecropia</Company>
     <!-- <GeneratePackageOnBuild>true</GeneratePackageOnBuild> -->
@@ -22,13 +22,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.4" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Serilog" Version="2.9.0" />
     <PackageReference Include="Serilog.Sinks.Debug" Version="1.0.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
     <PackageReference Include="System.Text.Json" Version="4.7.2" />
   </ItemGroup>
 

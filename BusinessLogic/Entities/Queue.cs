@@ -1,9 +1,6 @@
 using Serilog;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Threading;
 
@@ -28,12 +25,6 @@ namespace EventManager.BusinessLogic.Entities
         /// </summary>
         private Queue()
         {
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.Debug()
-                .CreateLogger();
-
-
             Log.Debug("Queue.Queue");
             Items = new ConcurrentQueue<QueueItem>();
 

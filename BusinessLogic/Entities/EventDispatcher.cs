@@ -1,6 +1,8 @@
+using EventManager.Data;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace EventManager.BusinessLogic.Entities
 {
@@ -49,6 +51,40 @@ namespace EventManager.BusinessLogic.Entities
                 };
                 eventSubscriptions.Add(subscription.EventName, subscriptions);
             }
+        }
+
+        /// <summary>
+        /// Allows to assing a function to be executed when an Event is called.
+        /// </summary>
+        /// <param name="eventName">Name of the event to attach the callback.</param>
+        /// <param name="callback">Lambda that will be executed when the event is fired,</param>
+        public void RegisterLocal(string eventName, Action<Event> callback)
+        {
+            List<Action<Event>> callbacks = new List<Action<Event>>();
+
+            callbacks.Add(callback);
+
+            Subscriber subscriber = new Subscriber()
+            {
+                Config = new SubscriberConfig
+                {
+                    MaxTries = 3,
+                    RequestRate = 100
+                }
+            };
+
+            Subscription subscription = new Subscription()
+            {
+                Subscriber = subscriber,
+                EventName = eventName,
+                Method = HttpMethod.Post,
+                EndPoint = EventManagerConstants.EventReceptionPath,
+                CallBacks = callbacks,
+                IsExternal = false
+            };
+
+            Register(subscription);
+
         }
 
         /// <summary>
