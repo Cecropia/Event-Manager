@@ -15,8 +15,8 @@ pipelines:
   branches:
     master:
       - step:
-        name: Deploy package to NuGet.org
-        script:
-          - dotnet pack event-manager.sln --configuration Release
-          - PACKAGE_NAME=$(ls -d $PWD/bin/Release/* | grep  ".*EventManager.*\.nupkg")
-          - dotnet nuget push $PACKAGE_NAME --skip-duplicate -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY
+          name: Deploy package to NuGet.org
+          script:
+            - dotnet pack event-manager.sln --configuration Release
+            - PACKAGE_NAME=$(ls -d $PWD/bin/Release/* | grep  ".*EventManager.*\.nupkg")
+            - dotnet nuget push $PACKAGE_NAME --skip-duplicate -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY
