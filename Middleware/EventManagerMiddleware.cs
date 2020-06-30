@@ -1,9 +1,15 @@
 using EventManager.BusinessLogic.Entities;
+using EventManager.BusinessLogic.Entities.Config;
 using EventManager.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace EventManager.Middleware
@@ -11,12 +17,65 @@ namespace EventManager.Middleware
     public class EventManagerMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly EventManagerConfiguration _config;
         private readonly EventDispatcher EventDispatcher;
 
-        public EventManagerMiddleware(RequestDelegate next)
+        public EventManagerMiddleware(
+                RequestDelegate next,
+                IOptions<EventManagerConfiguration> config
+            )
         {
             _next = next;
+            _config = config.Value;
             EventDispatcher = EventDispatcher.Instance;
+
+            foreach (SubscriptionConfiguration subscriptionConf in _config.Subscriptions)
+            {
+                Debug.WriteLine(subscriptionConf.EventName);
+
+                foreach (EventSubscriberConfiguration eventSubscriberConf in subscriptionConf.Subscribers)
+                {
+                    Debug.WriteLine(eventSubscriberConf.Name);
+                    Debug.WriteLine(eventSubscriberConf.Method);
+
+                    SubscriberConfiguration subscriberConfig = _config.Subscribers.Find(x => x.Name == eventSubscriberConf.Name);
+
+                    if (subscriberConfig != null)
+                    {
+                        List<Action<Event>> callbacks = new List<Action<Event>>();
+
+                        Subscriber subscriber = new Subscriber()
+                        {
+                            Config = new SubscriberConfig
+                            {
+                                MaxTries = subscriberConfig.Config.MaxRetries,
+                                RequestRate = subscriberConfig.Config.RequestRate
+                            }
+                        };
+
+                        if (eventSubscriberConf.Endpoint == null)
+                        {
+                            eventSubscriberConf.Endpoint = subscriberConfig.Config.BaseURL + EventManagerConstants.EventReceptionPath;
+                        }
+                        else
+                        {
+                            eventSubscriberConf.Endpoint = subscriberConfig.Config.BaseURL + eventSubscriberConf.Endpoint;
+                        }
+
+                        Subscription subscription = new Subscription()
+                        {
+                            Subscriber = subscriber,
+                            EventName = subscriptionConf.EventName,
+                            Method = new HttpMethod(eventSubscriberConf.Method),
+                            EndPoint = eventSubscriberConf.Endpoint,
+                            CallBacks = callbacks,
+                            IsExternal = true
+                        };
+
+                        EventDispatcher.Register(subscription);
+                    }
+                }
+            }
         }
 
         // IMyScopedService is injected into Invoke
@@ -36,8 +95,8 @@ namespace EventManager.Middleware
                 {
                     Name = (string)json["Name"],
                     Timestamp = (DateTime)json["Timestamp"],
-                    Payload = json["Payload"] as JObject,
-                    ExtraParams = json["ExtraParams"] as JObject,
+                    Payload = json["Payload"].ToString(Formatting.None),
+                    ExtraParams = json["ExtraParams"].ToObject<JObject>(),
                 };
 
                 EventDispatcher.Dispatch(e);

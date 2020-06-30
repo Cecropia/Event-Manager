@@ -1,5 +1,7 @@
-using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EventManager.BusinessLogic.Extensions
@@ -19,12 +21,16 @@ namespace EventManager.BusinessLogic.Extensions
         /// <param name="method">Method(POST/PUT)</param>
         /// <param name="endpoint">URL</param>
         /// <returns>Boolean</returns>
-        public static async Task<bool> MakeCallRequest(string body, string method, string endpoint)
+        public static async Task<bool> MakeCallRequest(string body, HttpMethod method, string endpoint)
         {
-            method = method.ToLower();
-            _client.BaseAddress = new Uri(endpoint);
-            var content = new StringContent(body, System.Text.Encoding.UTF8, "application/json");
-            var result = (method) =="post" ? await _client.PostAsync(endpoint, content) : await _client.PutAsync(endpoint, content);
+            HttpRequestMessage request = new HttpRequestMessage(method, endpoint);
+            request.Headers.Accept.Clear();
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(TypeJson));
+            //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            request.Content = new StringContent(body, Encoding.UTF8, TypeJson);
+
+            var result = await _client.SendAsync(request, CancellationToken.None);
+
             return result.StatusCode == System.Net.HttpStatusCode.OK;
         }
     }

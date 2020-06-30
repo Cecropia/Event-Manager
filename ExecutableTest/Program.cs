@@ -1,9 +1,12 @@
 using EventManager.BusinessLogic.Entities;
 using EventManager.Data;
 using Newtonsoft.Json.Linq;
+using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 
 
@@ -23,6 +26,11 @@ namespace ExecutableTest
         public static void queue_test()
         {
             Console.WriteLine("---- Queue Test");
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .CreateLogger();
 
 
             string responseBody = @"
@@ -44,8 +52,8 @@ namespace ExecutableTest
             {
                 Name = (string)json["Name"],
                 Timestamp = (DateTime)json["Timestamp"],
-                Payload = json["Payload"] as JObject,
-                ExtraParams = json["ExtraParams"] as JObject,
+                Payload = json["Payload"].ToString(),
+                ExtraParams = json["ExtraParams"].ToObject<JObject>(),
             };
 
             List<Action<Event>> callbacks = new List<Action<Event>>();
@@ -63,7 +71,7 @@ namespace ExecutableTest
             {
                 Subscriber = subscriber,
                 EventName = "event_name",
-                Method = "POST",
+                Method = HttpMethod.Post,
                 EndPoint = EventManagerConstants.EventReceptionPath,
                 CallBacks = callbacks
             };
@@ -101,7 +109,6 @@ namespace ExecutableTest
 
             queue.Add(q3);
 
-
             for (int k = 0; k < 1000; k++)
             {
                 QueueItem qNew = new QueueItem()
@@ -126,7 +133,20 @@ namespace ExecutableTest
 
             EventDispatcher = EventDispatcher.Instance;
 
+            // overwriting for console output
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .CreateLogger();
+
             List<Action<Event>> callbacks = new List<Action<Event>>();
+
+            Action<Event> callback = (Event e) => {
+                Log.Debug("---- Call from Subscription callback");
+            };
+
+            callbacks.Add(callback);
+
 
             Subscriber subscriber = new Subscriber()
             {
@@ -141,13 +161,18 @@ namespace ExecutableTest
             {
                 Subscriber = subscriber,
                 EventName = "careers_salesforce_after_skill_created",
-                Method = "POST",
+                Method = HttpMethod.Post,
                 EndPoint = EventManagerConstants.EventReceptionPath,
-                CallBacks = callbacks
+                CallBacks = callbacks,
+                IsExternal = false
             };
 
             EventDispatcher.Register(subscription);
 
+            EventDispatcher.RegisterLocal("careers_salesforce_after_skill_created", (Event e) =>
+            {
+                Log.Debug("---- Call from RegisterLocal callback");
+            });
 
             //-----------------------------------------------//
 
@@ -173,8 +198,8 @@ namespace ExecutableTest
             {
                 Name = (string)json["Name"],
                 Timestamp = (DateTime)json["Timestamp"],
-                Payload = json["Payload"] as JObject,
-                ExtraParams = json["ExtraParams"] as JObject,
+                Payload = json["Payload"].ToString(),
+                ExtraParams = json["ExtraParams"].ToObject<JObject>(),
             };
 
 

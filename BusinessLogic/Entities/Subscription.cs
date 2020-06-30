@@ -1,8 +1,8 @@
-using EventManager.BusinessLogic.Entities;
 using EventManager.BusinessLogic.Extensions;
-using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace EventManager.BusinessLogic.Entities
@@ -11,7 +11,7 @@ namespace EventManager.BusinessLogic.Entities
     {
         public string EventName { get; set; }
         public Subscriber Subscriber { get; set; }
-        public string Method { get; set; }
+        public HttpMethod Method { get; set; }
         public string EndPoint { get; set; }
         public List<Action<Event>> CallBacks { get; set; }
         public bool IsExternal { get; set; }
@@ -27,18 +27,21 @@ namespace EventManager.BusinessLogic.Entities
         /// <returns>Boolean</returns>
         public async Task<bool> SendEvent(Event _event)
         {
-            var json = JsonConvert.SerializeObject(_event.Payload);
+            var json = _event.Payload;
+
             if (this.IsExternal)
             {
+                Log.Debug("Subscription.SendEvent: isExternal true");
                 return await HttpClientExtension.MakeCallRequest(json, this.Method, this.EndPoint);
             }
             else
             {
+                Log.Debug("Subscription.SendEvent: isExternal false");
                 try
                 {
-                    foreach (var f in this.CallBacks)
+                    foreach (var callback in CallBacks)
                     {
-                        f.Invoke(_event);
+                        callback.Invoke(_event);
                         //TODO Handle async actions
                     }
                     return true;
@@ -47,10 +50,7 @@ namespace EventManager.BusinessLogic.Entities
                 {
                     return false;
                 }
-                
             }
-
         }
-
     }
 }
