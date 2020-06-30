@@ -1,0 +1,22 @@
+image: cecropia/dotnet-with-zip:3.1
+
+pipelines:
+  pull-requests:
+    "*":
+      - step:
+          name: Build and test
+          caches:
+            - dotnetcore
+          script:
+            - dotnet restore event-manager.sln
+            - dotnet build event-manager.sln --configuration Release
+            - dotnet test event-manager.sln --logger "junit;LogFilePath=test-results/junit.xml"
+      
+  branches:
+    master:
+      - step:
+        name: Deploy package to NuGet.org
+        script:
+          - dotnet pack event-manager.sln --configuration Release
+          - PACKAGE_NAME=$(ls -d $PWD/bin/Release/* | grep  ".*EventManager.*\.nupkg")
+          - dotnet nuget push $PACKAGE_NAME --skip-duplicate -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY
