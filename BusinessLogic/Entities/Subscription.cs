@@ -1,4 +1,4 @@
-using EventManager.BusinessLogic.Extensions;
+using EventManager.BusinessLogic.Interfaces;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -16,6 +16,8 @@ namespace EventManager.BusinessLogic.Entities
         public List<Action<Event>> CallBacks { get; set; }
         public bool IsExternal { get; set; }
 
+        public IAuthHandler Auth { get; set; }
+
         public Subscription()
         {
         }
@@ -32,7 +34,7 @@ namespace EventManager.BusinessLogic.Entities
             if (this.IsExternal)
             {
                 Log.Debug("Subscription.SendEvent: isExternal true");
-                return await HttpClientExtension.MakeCallRequest(json, this.Method, this.EndPoint);
+                return await this.Auth.SendEvent(_event, this);
             }
             else
             {
