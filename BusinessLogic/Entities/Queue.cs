@@ -99,6 +99,7 @@ namespace EventManager.BusinessLogic.Entities
             if (timeDiff >= millisecondRate)
             {
                 Log.Debug("Queue.ProcessItem: timeDiff: " + timeDiff);
+                Log.Debug($"Queue.ProcessItem: item.Tries {item.Tries}");
 
                 if (++item.Tries <= subscriberConfig.MaxTries)
                 {
@@ -117,6 +118,13 @@ namespace EventManager.BusinessLogic.Entities
                         // If the SendEvent fails (not OK) then sent back to the queue for it to be processed again
                         Log.Debug("Queue.ProcessItem, Item Processed FAILED, back to queue " + item.Guid.ToString());
                         Items.Enqueue(item);
+
+                        if (Interlocked.Equals(running, 0)) //!running
+                        {
+                            Log.Debug("Queue.ProcessItem: Timer restarted!!");
+                            Interlocked.Exchange(ref running, 1);
+                            timer.Change(1, milliseconds);
+                        }
                     }
                 }
                 else
