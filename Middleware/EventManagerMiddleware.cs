@@ -1,5 +1,6 @@
 using EventManager.BusinessLogic.Entities;
 using EventManager.BusinessLogic.Entities.Config;
+using EventManager.BusinessLogic.Factories;
 using EventManager.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -31,13 +32,8 @@ namespace EventManager.Middleware
 
             foreach (SubscriptionConfiguration subscriptionConf in _config.Subscriptions)
             {
-                Debug.WriteLine(subscriptionConf.EventName);
-
                 foreach (EventSubscriberConfiguration eventSubscriberConf in subscriptionConf.Subscribers)
                 {
-                    Debug.WriteLine(eventSubscriberConf.Name);
-                    Debug.WriteLine(eventSubscriberConf.Method);
-
                     SubscriberConfiguration subscriberConfig = _config.Subscribers.Find(x => x.Name == eventSubscriberConf.Name);
 
                     if (subscriberConfig != null)
@@ -69,7 +65,8 @@ namespace EventManager.Middleware
                             Method = new HttpMethod(eventSubscriberConf.Method),
                             EndPoint = eventSubscriberConf.Endpoint,
                             CallBacks = callbacks,
-                            IsExternal = true
+                            IsExternal = true,
+                            Auth = AuthFactory.Create(subscriberConfig.Auth)
                         };
 
                         EventDispatcher.Register(subscription);
