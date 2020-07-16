@@ -1,4 +1,4 @@
-using EventManager.BusinessLogic.Entities.Config;
+using EventManager.BusinessLogic.Entities.Configuration;
 using EventManager.Data;
 using EventManager.Middleware;
 using Microsoft.AspNetCore.Http;

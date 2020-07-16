@@ -1,24 +1,29 @@
-using EventManager.BusinessLogic.Entities.Config;
+using EventManager.BusinessLogic.Entities.Configuration;
 using EventManager.BusinessLogic.Interfaces;
 using Serilog;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 namespace EventManager.BusinessLogic.Entities.Auth
 {
     public class BasicAuth : IAuthHandler
     {
         public static string TypeJson = "application/json";
-        private string User;
-        private string Password;
+        private readonly AuthConfig authConfig;
+        private readonly string Username;
+        private readonly string Password;
 
         public BasicAuth(AuthConfig authConfig)
         {
-            User = authConfig.User;
+            this.authConfig = authConfig;
+            Username = authConfig.Username;
             Password = authConfig.Password;
         }
         public async Task<bool> SendEvent(Event e, Subscription subscription)
@@ -27,7 +32,7 @@ namespace EventManager.BusinessLogic.Entities.Auth
 
             HttpClient _client = new HttpClient();
 
-            string credentials = Convert.ToBase64String(Encoding.Default.GetBytes($"{User}:{Password}"));
+            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{Username}:{Password}"));
 
             HttpRequestMessage request = new HttpRequestMessage
             {
@@ -43,6 +48,30 @@ namespace EventManager.BusinessLogic.Entities.Auth
             var result = await _client.SendAsync(request, CancellationToken.None);
 
             return result.StatusCode == System.Net.HttpStatusCode.OK;
+        }
+
+        /// <summary>
+        /// Checks for the required properties to be present
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="eventSubscriberConfiguration"></param>
+        /// <returns>Bool indicating if is valid or not</returns>
+        public bool Valid(Config config, EventSubscriberConfiguration eventSubscriberConfiguration)
+        {
+            Enum.TryParse(authConfig.Type, out AuthType authType);
+
+            List<string> requiredProperties = new List<string>
+            {
+                config.BaseURL,
+                authConfig.Username,
+                authConfig.Password,
+                eventSubscriberConfiguration.Endpoint,
+                eventSubscriberConfiguration.Method
+            };
+
+            bool notEmpty = requiredProperties.All(property => !string.IsNullOrEmpty(property));
+
+            return notEmpty && authType == AuthType.Basic;
         }
     }
 }
