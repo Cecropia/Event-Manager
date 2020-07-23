@@ -47,10 +47,10 @@ namespace EventManager.BusinessLogic.Factories
         /// <param name="eventSubscriberConf"></param>
         /// <param name="subscriberConfig"></param>
         /// <returns></returns>
-        public static string Endpoint(EventSubscriberConfiguration eventSubscriberConf, SubscriberConfiguration subscriberConfig)
+        public static string Endpoint(EventSubscriberConfiguration eventSubscriberConf, ExternalServiceConfiguration externalService)
         {
 
-            AuthConfig authConfig = subscriberConfig.Auth;
+            AuthConfig authConfig = externalService.Auth;
             Enum.TryParse(authConfig.Type, out AuthType authType);
 
             if (authType != AuthType.OAuthClientPassword)
@@ -58,11 +58,11 @@ namespace EventManager.BusinessLogic.Factories
                 // do not concatenate
                 if (eventSubscriberConf.Endpoint == null)
                 {
-                    eventSubscriberConf.Endpoint = subscriberConfig.Config.BaseURL + EventManagerConstants.EventReceptionPath;
+                    eventSubscriberConf.Endpoint = externalService.Config.BaseURL + EventManagerConstants.EventReceptionPath;
                 }
                 else
                 {
-                    eventSubscriberConf.Endpoint = subscriberConfig.Config.BaseURL + eventSubscriberConf.Endpoint;
+                    eventSubscriberConf.Endpoint = externalService.Config.BaseURL + eventSubscriberConf.Endpoint;
                 }
             }
 
