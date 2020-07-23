@@ -17,7 +17,7 @@ namespace ExecutableTest
         static Queue queue;
         static EventDispatcher EventDispatcher;
 
-        static void Main(string[] args)
+        static void Main()
         {
             //queue_test();
             event_dispatcher_test();

@@ -1,11 +1,13 @@
 using EventManager.BusinessLogic.Entities;
-using EventManager.BusinessLogic.Entities.Config;
+using EventManager.BusinessLogic.Entities.Configuration;
 using EventManager.BusinessLogic.Factories;
+using EventManager.BusinessLogic.Interfaces;
 using EventManager.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -38,38 +40,41 @@ namespace EventManager.Middleware
 
                     if (subscriberConfig != null)
                     {
-                        List<Action<Event>> callbacks = new List<Action<Event>>();
+                        IAuthHandler auth = AuthFactory.Create(subscriberConfig.Auth);
 
-                        Subscriber subscriber = new Subscriber()
+                        if (!auth.Valid(subscriberConfig.Config, eventSubscriberConf))
                         {
-                            Config = new SubscriberConfig
-                            {
-                                MaxTries = subscriberConfig.Config.MaxRetries,
-                                RequestRate = subscriberConfig.Config.RequestRate
-                            }
-                        };
-
-                        if (eventSubscriberConf.Endpoint == null)
-                        {
-                            eventSubscriberConf.Endpoint = subscriberConfig.Config.BaseURL + EventManagerConstants.EventReceptionPath;
+                            throw new ArgumentException($"EventManagerMiddleware ERROR: subscriberConfig is not Valid for the subscriberConfig.Auth.Type `{subscriberConfig.Auth.Type}` and name `{subscriberConfig.Name}`, so it wont be registered with EventDispatcher.Register");
                         }
                         else
                         {
-                            eventSubscriberConf.Endpoint = subscriberConfig.Config.BaseURL + eventSubscriberConf.Endpoint;
+                            List<Action<Event>> callbacks = new List<Action<Event>>();
+
+                            Subscriber subscriber = new Subscriber()
+                            {
+                                Config = new SubscriberConfig
+                                {
+                                    MaxTries = subscriberConfig.Config.MaxRetries,
+                                    RequestRate = subscriberConfig.Config.RequestRate
+                                }
+                            };
+
+                            eventSubscriberConf.Endpoint = AuthFactory.Endpoint(eventSubscriberConf, subscriberConfig);
+
+                            Subscription subscription = new Subscription()
+                            {
+                                Subscriber = subscriber,
+                                EventName = subscriptionConf.EventName,
+                                Method = new HttpMethod(eventSubscriberConf.Method),
+                                EndPoint = eventSubscriberConf.Endpoint,
+                                CallBacks = callbacks,
+                                IsExternal = true,
+                                Auth = auth
+                            };
+
+                            EventDispatcher.Register(subscription);
                         }
 
-                        Subscription subscription = new Subscription()
-                        {
-                            Subscriber = subscriber,
-                            EventName = subscriptionConf.EventName,
-                            Method = new HttpMethod(eventSubscriberConf.Method),
-                            EndPoint = eventSubscriberConf.Endpoint,
-                            CallBacks = callbacks,
-                            IsExternal = true,
-                            Auth = AuthFactory.Create(subscriberConfig.Auth)
-                        };
-
-                        EventDispatcher.Register(subscription);
                     }
                 }
             }

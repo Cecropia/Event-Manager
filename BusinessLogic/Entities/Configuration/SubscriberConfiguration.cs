@@ -1,4 +1,6 @@
-namespace EventManager.BusinessLogic.Entities.Config
+using System;
+
+namespace EventManager.BusinessLogic.Entities.Configuration
 {
     public class SubscriberConfiguration
     {

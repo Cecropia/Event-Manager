@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EventManager.BusinessLogic.Entities.Config
+namespace EventManager.BusinessLogic.Entities.Configuration
 {
     public class Config
     {
