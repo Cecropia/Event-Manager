@@ -36,15 +36,15 @@ namespace EventManager.Middleware
             {
                 foreach (EventSubscriberConfiguration eventSubscriberConf in subscriptionConf.Subscribers)
                 {
-                    SubscriberConfiguration subscriberConfig = _config.Subscribers.Find(x => x.Name == eventSubscriberConf.Name);
+                    ExternalServiceConfiguration externalService = _config.ExternalServices.Find(x => x.Name == eventSubscriberConf.Name);
 
-                    if (subscriberConfig != null)
+                    if (externalService != null)
                     {
-                        IAuthHandler auth = AuthFactory.Create(subscriberConfig.Auth);
+                        IAuthHandler auth = AuthFactory.Create(externalService.Auth);
 
-                        if (!auth.Valid(subscriberConfig.Config, eventSubscriberConf))
+                        if (!auth.Valid(externalService.Config, eventSubscriberConf))
                         {
-                            throw new ArgumentException($"EventManagerMiddleware ERROR: subscriberConfig is not Valid for the subscriberConfig.Auth.Type `{subscriberConfig.Auth.Type}` and name `{subscriberConfig.Name}`, so it wont be registered with EventDispatcher.Register");
+                            throw new ArgumentException($"EventManagerMiddleware ERROR: externalService is not Valid for the externalService.Auth.Type `{externalService.Auth.Type}` and name `{externalService.Name}`, so it wont be registered with EventDispatcher.Register");
                         }
                         else
                         {
@@ -54,12 +54,12 @@ namespace EventManager.Middleware
                             {
                                 Config = new SubscriberConfig
                                 {
-                                    MaxTries = subscriberConfig.Config.MaxRetries,
-                                    RequestRate = subscriberConfig.Config.RequestRate
+                                    MaxTries = externalService.Config.MaxRetries,
+                                    RequestRate = externalService.Config.RequestRate
                                 }
                             };
 
-                            eventSubscriberConf.Endpoint = AuthFactory.Endpoint(eventSubscriberConf, subscriberConfig);
+                            eventSubscriberConf.Endpoint = AuthFactory.Endpoint(eventSubscriberConf, externalService);
 
                             Subscription subscription = new Subscription()
                             {
