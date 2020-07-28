@@ -93,17 +93,18 @@ namespace EventManager.BusinessLogic.Entities.Auth
 
             Log.Debug($"OAuthClientPassword.SendEvent, StatusCode:  {result.StatusCode}");
 
+            string responseResult = await result.Content.ReadAsStringAsync();
 
             if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
-                Log.Debug($"OAuthClientPassword.SendEvent, ERROR : BadRequest: " + result.Content.ReadAsStringAsync().Result);
+                Log.Debug($"OAuthClientPassword.SendEvent, ERROR : BadRequest: " + responseResult);
                 return false;
             }
 
-            Log.Debug($"OAuthClientPassword.SendEvent, Result:{result.Content.ReadAsStringAsync().Result}");
+            Log.Debug($"OAuthClientPassword.SendEvent, Result:{responseResult}");
 
 
-            ResetAccessTokenIfErrorInResponseMessage(result);
+            ResetAccessTokenIfErrorInResponseMessage(responseResult);
 
             // TODO: add helper, to dispatch the response and use the same call in other Auths
 
@@ -115,17 +116,32 @@ namespace EventManager.BusinessLogic.Entities.Auth
         /// if so, then sets the AccesToken to null, so it can log in again
         /// </summary>
         /// <param name="response"></param>
-        private void ResetAccessTokenIfErrorInResponseMessage(HttpResponseMessage response)
+        private void ResetAccessTokenIfErrorInResponseMessage(string responseResult)
         {
-            List<Dictionary<string, string>> resultValues = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(response.Content.ReadAsStringAsync().Result);
 
-            if (resultValues.Count > 0)
+            // if error code string is there, then parse
+            if (responseResult.IndexOf("errorCode") != -1)
             {
-                Dictionary<string, string> firstItem = resultValues[0];
-                if (firstItem.ContainsKey("errorCode") && firstItem["errorCode"] == "INVALID_SESSION_ID")
+                // try to parse the json to find the error code
+                try
                 {
-                    Log.Debug($"OAuthClientPassword.ResetAccessTokenIfErrorInResponseMessage: AccessToken set to `null` ");
-                    AccessToken = null;
+                    List<Dictionary<string, string>> resultValues = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(responseResult);
+
+                    if (resultValues.Count > 0)
+                    {
+                        Dictionary<string, string> firstItem = resultValues[0];
+                        if (firstItem.ContainsKey("errorCode") && firstItem["errorCode"] == "INVALID_SESSION_ID")
+                        {
+                            Log.Debug($"OAuthClientPassword.ResetAccessTokenIfErrorInResponseMessage: AccessToken set to `null` ");
+                            AccessToken = null;
+                        }
+                    }
+                }
+                catch (JsonReaderException)
+                {
+                    // JsonConvert fails because the Dictionary<string, string> is not met,
+                    // ergo there is no error but the normal data
+                    // so nothing to do here, just continue
                 }
             }
         }

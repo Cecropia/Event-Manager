@@ -6,6 +6,6 @@ namespace EventManager.Data
 {
     public static class EventManagerConstants
     {
-        public static readonly string EventReceptionPath = "/cec-event-manager/event-reception";
+        public static string EventReceptionPath = "/cec-event-manager/event-reception";
     }
 }
