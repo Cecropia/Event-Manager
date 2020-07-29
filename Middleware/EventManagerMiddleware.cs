@@ -30,6 +30,7 @@ namespace EventManager.Middleware
         {
             _next = next;
             _config = config.Value;
+            EventManagerConstants.EventReceptionPath = _config.EventReceptionPath;
             EventDispatcher = EventDispatcher.Instance;
 
             foreach (SubscriptionConfiguration subscriptionConf in _config.Subscriptions)
