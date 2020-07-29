@@ -1,3 +1,7 @@
+![Build and test](https://github.com/Cecropia/Event-Manager/workflows/Build%20and%20test/badge.svg)
+
+![Deploy package to NuGet.org](https://github.com/Cecropia/Event-Manager/workflows/Deploy%20package%20to%20NuGet.org/badge.svg)
+
 - How to clean package cache:
 
 Go to
