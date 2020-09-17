@@ -10,7 +10,6 @@ using Newtonsoft.Json.Linq;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -30,7 +29,7 @@ namespace EventManager.Middleware
         {
             _next = next;
             _config = config.Value;
-            EventManagerConstants.EventReceptionPath = _config.EventReceptionPath;
+            EventManagerConstants.EventReceptionPath = !string.IsNullOrEmpty(_config.EventReceptionPath) ? _config.EventReceptionPath : EventManagerConstants.EventReceptionPath;
             EventDispatcher = EventDispatcher.Instance;
 
             foreach (SubscriptionConfiguration subscriptionConf in _config.Subscriptions)
