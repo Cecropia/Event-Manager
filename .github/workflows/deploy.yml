@@ -1,0 +1,23 @@
+name: Deploy package to NuGet.org
+
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    build:
+        name: Deploy package to NuGet.org
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: Creating and deploying package to NuGet
+              env:
+                NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+              run: |
+                    dotnet pack event-manager.sln --configuration Release
+                    PACKAGE_NAME=$(ls -d $PWD/bin/Release/* | grep  ".*EventManager.*\.nupkg")
+                    dotnet nuget push $PACKAGE_NAME --skip-duplicate -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY
+
+

@@ -1,13 +1,15 @@
 using EventManager.BusinessLogic.Entities;
-using EventManager.BusinessLogic.Entities.Config;
+using EventManager.BusinessLogic.Entities.Configuration;
+using EventManager.BusinessLogic.Factories;
+using EventManager.BusinessLogic.Interfaces;
 using EventManager.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -27,52 +29,52 @@ namespace EventManager.Middleware
         {
             _next = next;
             _config = config.Value;
+            EventManagerConstants.EventReceptionPath = !string.IsNullOrEmpty(_config.EventReceptionPath) ? _config.EventReceptionPath : EventManagerConstants.EventReceptionPath;
             EventDispatcher = EventDispatcher.Instance;
 
             foreach (SubscriptionConfiguration subscriptionConf in _config.Subscriptions)
             {
-                Debug.WriteLine(subscriptionConf.EventName);
-
                 foreach (EventSubscriberConfiguration eventSubscriberConf in subscriptionConf.Subscribers)
                 {
-                    Debug.WriteLine(eventSubscriberConf.Name);
-                    Debug.WriteLine(eventSubscriberConf.Method);
+                    ExternalServiceConfiguration externalService = _config.ExternalServices.Find(x => x.Name == eventSubscriberConf.Name);
 
-                    SubscriberConfiguration subscriberConfig = _config.Subscribers.Find(x => x.Name == eventSubscriberConf.Name);
-
-                    if (subscriberConfig != null)
+                    if (externalService != null)
                     {
-                        List<Action<Event>> callbacks = new List<Action<Event>>();
+                        IAuthHandler auth = AuthFactory.Create(externalService.Auth);
 
-                        Subscriber subscriber = new Subscriber()
+                        if (!auth.Valid(externalService.Config, eventSubscriberConf))
                         {
-                            Config = new SubscriberConfig
-                            {
-                                MaxTries = subscriberConfig.Config.MaxRetries,
-                                RequestRate = subscriberConfig.Config.RequestRate
-                            }
-                        };
-
-                        if (eventSubscriberConf.Endpoint == null)
-                        {
-                            eventSubscriberConf.Endpoint = subscriberConfig.Config.BaseURL + EventManagerConstants.EventReceptionPath;
+                            throw new ArgumentException($"EventManagerMiddleware ERROR: externalService is not Valid for the externalService.Auth.Type `{externalService.Auth.Type}` and name `{externalService.Name}`, so it wont be registered with EventDispatcher.Register");
                         }
                         else
                         {
-                            eventSubscriberConf.Endpoint = subscriberConfig.Config.BaseURL + eventSubscriberConf.Endpoint;
+                            List<Action<Event>> callbacks = new List<Action<Event>>();
+
+                            Subscriber subscriber = new Subscriber()
+                            {
+                                Config = new SubscriberConfig
+                                {
+                                    MaxTries = externalService.Config.MaxRetries,
+                                    RequestRate = externalService.Config.RequestRate
+                                }
+                            };
+
+                            eventSubscriberConf.Endpoint = AuthFactory.Endpoint(eventSubscriberConf, externalService);
+
+                            Subscription subscription = new Subscription()
+                            {
+                                Subscriber = subscriber,
+                                EventName = subscriptionConf.EventName,
+                                Method = new HttpMethod(eventSubscriberConf.Method),
+                                EndPoint = eventSubscriberConf.Endpoint,
+                                CallBacks = callbacks,
+                                IsExternal = true,
+                                Auth = auth
+                            };
+
+                            EventDispatcher.Register(subscription);
                         }
 
-                        Subscription subscription = new Subscription()
-                        {
-                            Subscriber = subscriber,
-                            EventName = subscriptionConf.EventName,
-                            Method = new HttpMethod(eventSubscriberConf.Method),
-                            EndPoint = eventSubscriberConf.Endpoint,
-                            CallBacks = callbacks,
-                            IsExternal = true
-                        };
-
-                        EventDispatcher.Register(subscription);
                     }
                 }
             }
