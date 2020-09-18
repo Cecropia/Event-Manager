@@ -2,7 +2,9 @@ using EventManager.BusinessLogic.Interfaces;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace EventManager.BusinessLogic.Entities
@@ -27,9 +29,9 @@ namespace EventManager.BusinessLogic.Entities
         /// </summary>
         /// <param name="_event">Event object</param>
         /// <returns>Boolean</returns>
-        public async Task<bool> SendEvent(Event _event)
+        public async Task<HttpResponseMessage> SendEvent(Event _event)
         {
-            var json = _event.Payload;
+            HttpResponseMessage httpResponseMessage;
 
             if (this.IsExternal)
             {
@@ -46,11 +48,15 @@ namespace EventManager.BusinessLogic.Entities
                         callback.Invoke(_event);
                         //TODO Handle async actions
                     }
-                    return true;
+                    string SerializedString = "true";
+                    httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(SerializedString, Encoding.UTF8, "application/json") };
+                    return httpResponseMessage;
                 }
                 catch (Exception)
                 {
-                    return false;
+                    string SerializedString = "false";
+                    httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent(SerializedString, Encoding.UTF8, "application/json") };
+                    return httpResponseMessage;
                 }
             }
         }

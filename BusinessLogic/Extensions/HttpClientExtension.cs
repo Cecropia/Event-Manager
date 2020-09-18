@@ -1,3 +1,7 @@
+using EventManager.BusinessLogic.Entities;
+using EventManager.Data;
+using Serilog;
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -20,8 +24,8 @@ namespace EventManager.BusinessLogic.Extensions
         /// <param name="body">Payload</param>
         /// <param name="method">Method(POST/PUT)</param>
         /// <param name="endpoint">URL</param>
-        /// <returns>Boolean</returns>
-        public static async Task<bool> MakeCallRequest(string body, HttpMethod method, string endpoint)
+        /// <returns>HttpResponseMessage</returns>
+        public static async Task<HttpResponseMessage> MakeCallRequest(string body, HttpMethod method, string endpoint)
         {
             HttpRequestMessage request = new HttpRequestMessage(method, endpoint);
             request.Headers.Accept.Clear();
@@ -29,9 +33,9 @@ namespace EventManager.BusinessLogic.Extensions
             //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             request.Content = new StringContent(body, Encoding.UTF8, TypeJson);
 
-            var result = await _client.SendAsync(request, CancellationToken.None);
+            HttpResponseMessage httpResponseMessage = await _client.SendAsync(request, CancellationToken.None);
 
-            return result.StatusCode == System.Net.HttpStatusCode.OK;
+            return httpResponseMessage;
         }
     }
 }

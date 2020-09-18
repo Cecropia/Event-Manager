@@ -1,7 +1,9 @@
+using EventManager.Data;
 using Serilog;
 using System;
 using System.Collections.Concurrent;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 
 namespace EventManager.BusinessLogic.Entities
@@ -104,10 +106,17 @@ namespace EventManager.BusinessLogic.Entities
                 if (++item.Tries <= subscriberConfig.MaxTries)
                 {
                     item.LastTry = DateTime.Now;
-                    if (await item.Subscription.SendEvent(item.Event))
+                    HttpResponseMessage httpResponseMessage = await item.Subscription.SendEvent(item.Event);
+
+                    if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                     {
                         item.Status = HttpStatusCode.OK;
                         Log.Debug("Queue.ProcessItem, Item Processed Status OK: " + item.Guid.ToString());
+
+                        /// Dispatch a NEW Event with the response of the current Event
+                        string contents = await httpResponseMessage.Content.ReadAsStringAsync();
+                        DispatchResponseEvent(contents, item.Event.Name);
+                        /////////////////////////////////
 
                         // If after processing items there are still items in queue
                         // then process the next one
@@ -139,6 +148,20 @@ namespace EventManager.BusinessLogic.Entities
                 Log.Debug("Queue.ProcessItem: Back to Queue: Request Rate too soon.");
                 Items.Enqueue(item);
             }
+        }
+
+        private void DispatchResponseEvent(string payload, string eventName)
+        {
+            Event ev = new Event()
+            {
+                Name = EventManagerConstants.ReplyEventPrefix + eventName,
+                Timestamp = DateTime.UtcNow,
+                Payload = payload,
+                ExtraParams = null,
+            };
+
+            EventDispatcher dispatcher = EventDispatcher.Instance;
+            dispatcher.Dispatch(ev);
         }
     }
 }
