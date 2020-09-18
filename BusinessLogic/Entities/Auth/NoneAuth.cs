@@ -5,6 +5,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace EventManager.BusinessLogic.Entities.Auth
@@ -16,7 +17,7 @@ namespace EventManager.BusinessLogic.Entities.Auth
         {
             this.authConfig = authConfig;
         }
-        public async Task<bool> SendEvent(Event e, Subscription s)
+        public async Task<HttpResponseMessage> SendEvent(Event e, Subscription s)
         {
             Log.Debug("NoneAuth.SendEvent");
 
