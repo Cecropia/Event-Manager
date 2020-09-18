@@ -5,6 +5,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -38,10 +39,11 @@ namespace EventManager.BusinessLogic.Entities.Auth
             Password = authConfig.Password;
             Token = authConfig.Token;
         }
-        public async Task<bool> SendEvent(Event e, Subscription subscription)
+        public async Task<HttpResponseMessage> SendEvent(Event e, Subscription subscription)
         {
             Log.Debug("BasicAuth.SendEvent");
 
+            HttpResponseMessage httpResponseMessage;
             HttpResponseMessage response;
             string jsonResponse;
 
@@ -68,7 +70,9 @@ namespace EventManager.BusinessLogic.Entities.Auth
                 Dictionary<string, string> values = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
                 if (values.ContainsKey("error"))
                 {
-                    return false;
+                    string SerializedString = "error";
+                    httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent(SerializedString, Encoding.UTF8, "application/json") };
+                    return httpResponseMessage;
                 }
                 else
                 {
@@ -89,16 +93,16 @@ namespace EventManager.BusinessLogic.Entities.Auth
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(TypeJson));
             request.Content = new StringContent(e.Payload, Encoding.UTF8, TypeJson);
 
-            HttpResponseMessage result = await _client.SendAsync(request);
+            httpResponseMessage = await _client.SendAsync(request);
 
-            Log.Debug($"OAuthClientPassword.SendEvent, StatusCode:  {result.StatusCode}");
+            Log.Debug($"OAuthClientPassword.SendEvent, StatusCode:  {httpResponseMessage.StatusCode}");
 
-            string responseResult = await result.Content.ReadAsStringAsync();
+            string responseResult = await httpResponseMessage.Content.ReadAsStringAsync();
 
-            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            if (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 Log.Debug($"OAuthClientPassword.SendEvent, ERROR : BadRequest: " + responseResult);
-                return false;
+                return httpResponseMessage;
             }
 
             Log.Debug($"OAuthClientPassword.SendEvent, Result:{responseResult}");
@@ -108,7 +112,7 @@ namespace EventManager.BusinessLogic.Entities.Auth
 
             // TODO: add helper, to dispatch the response and use the same call in other Auths
 
-            return result.StatusCode == System.Net.HttpStatusCode.OK;
+            return httpResponseMessage;
         }
 
         /// <summary>

@@ -26,7 +26,7 @@ namespace EventManager.BusinessLogic.Entities.Auth
             Username = authConfig.Username;
             Password = authConfig.Password;
         }
-        public async Task<bool> SendEvent(Event e, Subscription subscription)
+        public async Task<HttpResponseMessage> SendEvent(Event e, Subscription subscription)
         {
             Log.Debug("BasicAuth.SendEvent");
 
@@ -45,9 +45,9 @@ namespace EventManager.BusinessLogic.Entities.Auth
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(TypeJson));
             request.Content = new StringContent(e.Payload, Encoding.UTF8, TypeJson);
 
-            var result = await _client.SendAsync(request, CancellationToken.None);
+            HttpResponseMessage httpResponseMessage = await _client.SendAsync(request, CancellationToken.None);
 
-            return result.StatusCode == System.Net.HttpStatusCode.OK;
+            return httpResponseMessage;
         }
 
         /// <summary>
