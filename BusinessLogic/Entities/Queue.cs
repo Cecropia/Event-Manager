@@ -108,7 +108,7 @@ namespace EventManager.BusinessLogic.Entities
                     item.LastTry = DateTime.Now;
                     HttpResponseMessage httpResponseMessage = await item.Subscription.SendEvent(item.Event);
 
-                    if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
+                    if (httpResponseMessage.IsSuccessStatusCode)
                     {
                         item.Status = HttpStatusCode.OK;
                         Log.Debug("Queue.ProcessItem, Item Processed Status OK: " + item.Guid.ToString());
