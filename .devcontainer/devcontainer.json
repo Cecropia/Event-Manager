@@ -2,7 +2,7 @@
 	"name": "Devcontainer for EventManager",
 	"dockerFile": "Dockerfile",
 
-	"appPort": [5000, 5001],
+	"appPort": [5422, 5421],
 
 	"settings": { 
 		"terminal.integrated.shell.linux": "/bin/bash"
@@ -12,7 +12,7 @@
 		"source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind"
 	],
 	"remoteEnv": {
-		"ASPNETCORE_Kestrel__Endpoints__Http__Url": "http://*:5000"
+		"ASPNETCORE_Kestrel__Endpoints__Http__Url": "http://*:5422"
 	},
 
 	"remoteUser": "vscode",	
