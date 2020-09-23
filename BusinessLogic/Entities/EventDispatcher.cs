@@ -13,6 +13,8 @@ namespace EventManager.BusinessLogic.Entities
 
         private static Queue queue;
 
+        public CustomAuthProviderRegistry customAuthProviderRegistry;
+
         // Dictionary is Thread safe.
         private static Dictionary<string, List<Subscription>> eventSubscriptions;
 
@@ -29,6 +31,7 @@ namespace EventManager.BusinessLogic.Entities
 
             queue = Queue.Instance;
             eventSubscriptions = new Dictionary<string, List<Subscription>>();
+            customAuthProviderRegistry = new CustomAuthProviderRegistry();
         }
 
         /// <summary>
