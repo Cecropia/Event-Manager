@@ -41,7 +41,7 @@ namespace EventManager.BusinessLogic.Entities.Auth
             request.Content = new StringContent(e.Payload, Encoding.UTF8, TypeJson);
 
             // just before sending the request we pass it to the custom auth provider with the specified name, if any
-            var customProvider = EventDispatcher.Instance.customAuthProviderRegistry.GetAuthProvider(
+            var customProvider = EventDispatcher.customAuthProviderRegistry.GetAuthProvider(
               this.authConfig.CustomAuthProviderName
             );
 
@@ -51,8 +51,11 @@ namespace EventManager.BusinessLogic.Entities.Auth
                 throw new ApplicationException($"Expected a custom auth provider with name '{this.authConfig.CustomAuthProviderName}' but none was found in the register");
             }
 
-            // allow the provider to modify the request as it sees fit
-            customProvider(request);
+            // allow the provider to modify the request and additional info as it sees fit
+            customProvider(
+                request,
+                subscription // TODO: implement deep copy for subscription
+            );
 
             HttpResponseMessage httpResponseMessage = await _client.SendAsync(request, CancellationToken.None);
             return httpResponseMessage;
