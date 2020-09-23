@@ -32,6 +32,9 @@ namespace EventManager.BusinessLogic.Factories
                 case AuthType.OAuthClientPassword:
                     authHandler = new OAuthClientPassword(authConfig);
                     break;
+                case AuthType.CustomAuth:
+                    authHandler = new CustomAuthAdapter(authConfig);
+                    break;
                 default:
                     authHandler = new NoneAuth(authConfig);
                     break;
