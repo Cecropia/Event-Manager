@@ -13,6 +13,8 @@ namespace EventManager.BusinessLogic.Entities
 
         private static Queue queue;
 
+        public static CustomAuthProviderRegistry customAuthProviderRegistry;
+
         // Dictionary is Thread safe.
         private static Dictionary<string, List<Subscription>> eventSubscriptions;
 
@@ -29,6 +31,7 @@ namespace EventManager.BusinessLogic.Entities
 
             queue = Queue.Instance;
             eventSubscriptions = new Dictionary<string, List<Subscription>>();
+            customAuthProviderRegistry = new CustomAuthProviderRegistry();
         }
 
         /// <summary>
@@ -85,6 +88,27 @@ namespace EventManager.BusinessLogic.Entities
 
             Register(subscription);
 
+        }
+
+        /// <summary>
+        /// This is a simplified version of the <see cref="EventDispatcher.Dispatch(Event)"/> method. But instead
+        /// of accepting a complete <see cref="Event"/>, it takes the event name and payload and proceeds to build
+        /// an event out of these.
+        /// 
+        /// The event dispatched with this method will have a `Timestamp` of `DateTime.UtcNow`, and the `ExtraParams`
+        /// will be `null. If you need to specify any of these then use the normal `Dispatch` method.
+        /// </summary>
+        /// <param name="eventName"></param>
+        /// <param name="eventPayload"></param>
+        public void SimpleDispatch(string eventName, string eventPayload)
+        {
+            this.Dispatch(new Event
+            {
+                Name = eventName,
+                Payload = eventPayload,
+                Timestamp = DateTime.UtcNow,
+                ExtraParams = null
+            });
         }
 
         /// <summary>

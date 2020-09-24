@@ -4,6 +4,7 @@ namespace EventManager.BusinessLogic.Entities
     {
         None,
         Basic,
-        OAuthClientPassword
+        OAuthClientPassword,
+        CustomAuth
     }
 }
