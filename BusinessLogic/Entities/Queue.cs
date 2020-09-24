@@ -115,7 +115,12 @@ namespace EventManager.BusinessLogic.Entities
 
                         /// Dispatch a NEW Event with the response of the current Event
                         string contents = await httpResponseMessage.Content.ReadAsStringAsync();
-                        DispatchResponseEvent(contents, item.Event.Name);
+
+                        EventDispatcher.Instance.SimpleDispatch(
+                            eventName: EventManagerConstants.ReplyEventPrefix + item.Event.Name,
+                            eventPayload: contents
+                        );
+
                         /////////////////////////////////
 
                         // If after processing items there are still items in queue
@@ -150,18 +155,5 @@ namespace EventManager.BusinessLogic.Entities
             }
         }
 
-        private void DispatchResponseEvent(string payload, string eventName)
-        {
-            Event ev = new Event()
-            {
-                Name = EventManagerConstants.ReplyEventPrefix + eventName,
-                Timestamp = DateTime.UtcNow,
-                Payload = payload,
-                ExtraParams = null,
-            };
-
-            EventDispatcher dispatcher = EventDispatcher.Instance;
-            dispatcher.Dispatch(ev);
-        }
     }
 }
