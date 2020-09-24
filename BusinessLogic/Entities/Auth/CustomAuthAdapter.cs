@@ -15,6 +15,12 @@ using System.Threading.Tasks;
 
 namespace EventManager.BusinessLogic.Entities.Auth
 {
+    /// <summary>
+    /// This type of authorization allows the user of the library to specify an `Action`
+    /// that is invoked once the <see cref="System.Net.Http.HttpRequestMessage"/> is built. 
+    /// This action is passed said request as well as the corresponding Subscription, 
+    /// and is free to modify said request as it sees fit (eg, adding a header).
+    /// </summary>
     public class CustomAuthAdapter : IAuthHandler
     {
         public static string TypeJson = "application/json";
@@ -80,12 +86,6 @@ namespace EventManager.BusinessLogic.Entities.Auth
         }
 
 
-        /// <summary>
-        /// Checks for the required properties to be present
-        /// </summary>
-        /// <param name="config"></param>
-        /// <param name="eventSubscriberConfiguration"></param>
-        /// <returns>Bool indicating if is valid or not</returns>
         public bool Valid(Config config, EventSubscriberConfiguration eventSubscriberConfiguration)
         {
             Enum.TryParse(authConfig.Type, out AuthType authType);

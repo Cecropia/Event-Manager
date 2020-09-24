@@ -24,12 +24,6 @@ namespace EventManager.BusinessLogic.Entities.Auth
             return await HttpClientExtension.MakeCallRequest(e.Payload, s.Method, s.EndPoint);
         }
 
-        /// <summary>
-        /// Checks for the required properties to be present
-        /// </summary>
-        /// <param name="config"></param>
-        /// <param name="eventSubscriberConfiguration"></param>
-        /// <returns>Bool indicating if is valid or not</returns>
         public bool Valid(Config config, EventSubscriberConfiguration eventSubscriberConfiguration)
         {
             Enum.TryParse(authConfig.Type, out AuthType authType);
