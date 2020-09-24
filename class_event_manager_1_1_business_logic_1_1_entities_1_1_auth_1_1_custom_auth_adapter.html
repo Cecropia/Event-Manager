@@ -89,13 +89,16 @@ $(document).ready(function(){initNavTree('class_event_manager_1_1_business_logic
 <div class="title">EventManager.BusinessLogic.Entities.Auth.CustomAuthAdapter Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>This type of authorization allows the user of the library to specify an <code>Action</code> that is invoked once the System.Net.Http.HttpRequestMessage is built. This action is passed said request as well as the corresponding <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a>, and is free to modify said request as it sees fit (eg, adding a header).  
+ <a href="class_event_manager_1_1_business_logic_1_1_entities_1_1_auth_1_1_custom_auth_adapter.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for EventManager.BusinessLogic.Entities.Auth.CustomAuthAdapter:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="class_event_manager_1_1_business_logic_1_1_entities_1_1_auth_1_1_custom_auth_adapter.png" usemap="#EventManager.BusinessLogic.Entities.Auth.CustomAuthAdapter_map" alt=""/>
   <map id="EventManager.BusinessLogic.Entities.Auth.CustomAuthAdapter_map" name="EventManager.BusinessLogic.Entities.Auth.CustomAuthAdapter_map">
-<area href="interface_event_manager_1_1_business_logic_1_1_interfaces_1_1_i_auth_handler.html" alt="EventManager.BusinessLogic.Interfaces.IAuthHandler" shape="rect" coords="0,0,370,24"/>
+<area href="interface_event_manager_1_1_business_logic_1_1_interfaces_1_1_i_auth_handler.html" title="Every AuthHandler implements a different authentication mechanism, and is an abstraction layer that i..." alt="EventManager.BusinessLogic.Interfaces.IAuthHandler" shape="rect" coords="0,0,370,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -104,11 +107,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a423140bf0e23000c6fe82e6cdd2eccd9"><td class="memItemLeft" align="right" valign="top"><a id="a423140bf0e23000c6fe82e6cdd2eccd9"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>CustomAuthAdapter</b> (<a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_configuration_1_1_auth_config.html">AuthConfig</a> authConfig)</td></tr>
 <tr class="separator:a423140bf0e23000c6fe82e6cdd2eccd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a7b8c7d0d04f5db52c7a54ecfe6d34d"><td class="memItemLeft" align="right" valign="top"><a id="a1a7b8c7d0d04f5db52c7a54ecfe6d34d"></a>
-async Task&lt; HttpResponseMessage &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>SendEvent</b> (<a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> e, <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a> subscription)</td></tr>
+<tr class="memitem:a1a7b8c7d0d04f5db52c7a54ecfe6d34d"><td class="memItemLeft" align="right" valign="top">async Task&lt; HttpResponseMessage &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_auth_1_1_custom_auth_adapter.html#a1a7b8c7d0d04f5db52c7a54ecfe6d34d">SendEvent</a> (<a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> e, <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a> subscription)</td></tr>
+<tr class="memdesc:a1a7b8c7d0d04f5db52c7a54ecfe6d34d"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method is used to have an auth handler send the specified <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> using the configuration provided in the <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a>.  <a href="class_event_manager_1_1_business_logic_1_1_entities_1_1_auth_1_1_custom_auth_adapter.html#a1a7b8c7d0d04f5db52c7a54ecfe6d34d">More...</a><br /></td></tr>
 <tr class="separator:a1a7b8c7d0d04f5db52c7a54ecfe6d34d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ecd7164173212081a83f15bd8cea0bb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_auth_1_1_custom_auth_adapter.html#a9ecd7164173212081a83f15bd8cea0bb">Valid</a> (<a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_configuration_1_1_config.html">Config</a> config, <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_configuration_1_1_event_subscriber_configuration.html">EventSubscriberConfiguration</a> eventSubscriberConfiguration)</td></tr>
-<tr class="memdesc:a9ecd7164173212081a83f15bd8cea0bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for the required properties to be present  <a href="class_event_manager_1_1_business_logic_1_1_entities_1_1_auth_1_1_custom_auth_adapter.html#a9ecd7164173212081a83f15bd8cea0bb">More...</a><br /></td></tr>
+<tr class="memdesc:a9ecd7164173212081a83f15bd8cea0bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method is used to validate the configuration provided for this <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscriber.html">Subscriber</a>. The idea is that this method fail if the Config or EventSubscriberConfiguration don't contain all the necessary information for this AuthProvider to perform its <em>auth scheme</em>.  <a href="class_event_manager_1_1_business_logic_1_1_entities_1_1_auth_1_1_custom_auth_adapter.html#a9ecd7164173212081a83f15bd8cea0bb">More...</a><br /></td></tr>
 <tr class="separator:a9ecd7164173212081a83f15bd8cea0bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
@@ -118,9 +121,52 @@ static string&#160;</td><td class="memItemRight" valign="bottom"><b>TypeJson</b>
 <tr class="separator:a2b13b214cdb08d823860b53693826a1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_custom_auth_adapter_8cs_source.html#l00018">18</a> of file <a class="el" href="_custom_auth_adapter_8cs_source.html">CustomAuthAdapter.cs</a>.</p>
+<div class="textblock"><p>This type of authorization allows the user of the library to specify an <code>Action</code> that is invoked once the System.Net.Http.HttpRequestMessage is built. This action is passed said request as well as the corresponding <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a>, and is free to modify said request as it sees fit (eg, adding a header). </p>
+
+<p class="definition">Definition at line <a class="el" href="_custom_auth_adapter_8cs_source.html#l00024">24</a> of file <a class="el" href="_custom_auth_adapter_8cs_source.html">CustomAuthAdapter.cs</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a1a7b8c7d0d04f5db52c7a54ecfe6d34d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a7b8c7d0d04f5db52c7a54ecfe6d34d">&#9670;&nbsp;</a></span>SendEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt;HttpResponseMessage&gt; EventManager.BusinessLogic.Entities.Auth.CustomAuthAdapter.SendEvent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a>&#160;</td>
+          <td class="paramname"><em>e</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a>&#160;</td>
+          <td class="paramname"><em>s</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This method is used to have an auth handler send the specified <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> using the configuration provided in the <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>The <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> we want to send</td></tr>
+    <tr><td class="paramname">s</td><td>The <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a> that specifies how the event is to be sent</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The response message obtained after sending the event</dd></dl>
+
+<p>Implements <a class="el" href="interface_event_manager_1_1_business_logic_1_1_interfaces_1_1_i_auth_handler.html#a5ce4d08992da9b4ddfaba18f6a7c4afd">EventManager.BusinessLogic.Interfaces.IAuthHandler</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="_custom_auth_adapter_8cs_source.html#l00033">33</a> of file <a class="el" href="_custom_auth_adapter_8cs_source.html">CustomAuthAdapter.cs</a>.</p>
+
+</div>
+</div>
 <a id="a9ecd7164173212081a83f15bd8cea0bb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9ecd7164173212081a83f15bd8cea0bb">&#9670;&nbsp;</a></span>Valid()</h2>
 
@@ -147,19 +193,19 @@ static string&#160;</td><td class="memItemRight" valign="bottom"><b>TypeJson</b>
       </table>
 </div><div class="memdoc">
 
-<p>Checks for the required properties to be present </p>
+<p>This method is used to validate the configuration provided for this <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscriber.html">Subscriber</a>. The idea is that this method fail if the Config or EventSubscriberConfiguration don't contain all the necessary information for this AuthProvider to perform its <em>auth scheme</em>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">config</td><td></td></tr>
-    <tr><td class="paramname">eventSubscriberConfiguration</td><td></td></tr>
+    <tr><td class="paramname">config</td><td>The Config we want to check</td></tr>
+    <tr><td class="paramname">eventSubscriberConfiguration</td><td>The EventSubscriberConfiguration we want to check</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Bool indicating if is valid or not</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A bool specifying whether the configuration is valid or not</dd></dl>
 
-<p>Implements <a class="el" href="interface_event_manager_1_1_business_logic_1_1_interfaces_1_1_i_auth_handler.html">EventManager.BusinessLogic.Interfaces.IAuthHandler</a>.</p>
+<p>Implements <a class="el" href="interface_event_manager_1_1_business_logic_1_1_interfaces_1_1_i_auth_handler.html#a5c1faa946710c8e00d5d9342bb9efeed">EventManager.BusinessLogic.Interfaces.IAuthHandler</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_custom_auth_adapter_8cs_source.html#l00089">89</a> of file <a class="el" href="_custom_auth_adapter_8cs_source.html">CustomAuthAdapter.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_custom_auth_adapter_8cs_source.html#l00088">88</a> of file <a class="el" href="_custom_auth_adapter_8cs_source.html">CustomAuthAdapter.cs</a>.</p>
 
 </div>
 </div>

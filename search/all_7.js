@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['makecallrequest_34',['MakeCallRequest',['../class_event_manager_1_1_business_logic_1_1_extensions_1_1_http_client_extension.html#a376b08c8bdea94e1a676a7a149411ca2',1,'EventManager::BusinessLogic::Extensions::HttpClientExtension']]]
+  ['iauthhandler_35',['IAuthHandler',['../interface_event_manager_1_1_business_logic_1_1_interfaces_1_1_i_auth_handler.html',1,'EventManager::BusinessLogic::Interfaces']]],
+  ['ireaderdatabase_36',['IReaderDatabase',['../interface_event_manager_1_1_business_logic_1_1_interfaces_1_1_i_reader_database.html',1,'EventManager::BusinessLogic::Interfaces']]]
 ];

@@ -94,7 +94,7 @@ Inheritance diagram for EventManager.BusinessLogic.Entities.Auth.NoneAuth:</div>
  <div class="center">
   <img src="class_event_manager_1_1_business_logic_1_1_entities_1_1_auth_1_1_none_auth.png" usemap="#EventManager.BusinessLogic.Entities.Auth.NoneAuth_map" alt=""/>
   <map id="EventManager.BusinessLogic.Entities.Auth.NoneAuth_map" name="EventManager.BusinessLogic.Entities.Auth.NoneAuth_map">
-<area href="interface_event_manager_1_1_business_logic_1_1_interfaces_1_1_i_auth_handler.html" alt="EventManager.BusinessLogic.Interfaces.IAuthHandler" shape="rect" coords="0,0,318,24"/>
+<area href="interface_event_manager_1_1_business_logic_1_1_interfaces_1_1_i_auth_handler.html" title="Every AuthHandler implements a different authentication mechanism, and is an abstraction layer that i..." alt="EventManager.BusinessLogic.Interfaces.IAuthHandler" shape="rect" coords="0,0,318,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -103,17 +103,59 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a840d7f97163405e4a1f7ad75e0da40e4"><td class="memItemLeft" align="right" valign="top"><a id="a840d7f97163405e4a1f7ad75e0da40e4"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>NoneAuth</b> (<a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_configuration_1_1_auth_config.html">AuthConfig</a> authConfig)</td></tr>
 <tr class="separator:a840d7f97163405e4a1f7ad75e0da40e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abec9a8e3f7d62f74a00afe835ac4e5be"><td class="memItemLeft" align="right" valign="top"><a id="abec9a8e3f7d62f74a00afe835ac4e5be"></a>
-async Task&lt; HttpResponseMessage &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>SendEvent</b> (<a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> e, <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a> s)</td></tr>
+<tr class="memitem:abec9a8e3f7d62f74a00afe835ac4e5be"><td class="memItemLeft" align="right" valign="top">async Task&lt; HttpResponseMessage &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_auth_1_1_none_auth.html#abec9a8e3f7d62f74a00afe835ac4e5be">SendEvent</a> (<a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> e, <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a> s)</td></tr>
+<tr class="memdesc:abec9a8e3f7d62f74a00afe835ac4e5be"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method is used to have an auth handler send the specified <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> using the configuration provided in the <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a>.  <a href="class_event_manager_1_1_business_logic_1_1_entities_1_1_auth_1_1_none_auth.html#abec9a8e3f7d62f74a00afe835ac4e5be">More...</a><br /></td></tr>
 <tr class="separator:abec9a8e3f7d62f74a00afe835ac4e5be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ffe668486bbd578c5ea9f945c95bd77"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_auth_1_1_none_auth.html#a2ffe668486bbd578c5ea9f945c95bd77">Valid</a> (<a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_configuration_1_1_config.html">Config</a> config, <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_configuration_1_1_event_subscriber_configuration.html">EventSubscriberConfiguration</a> eventSubscriberConfiguration)</td></tr>
-<tr class="memdesc:a2ffe668486bbd578c5ea9f945c95bd77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for the required properties to be present  <a href="class_event_manager_1_1_business_logic_1_1_entities_1_1_auth_1_1_none_auth.html#a2ffe668486bbd578c5ea9f945c95bd77">More...</a><br /></td></tr>
+<tr class="memdesc:a2ffe668486bbd578c5ea9f945c95bd77"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method is used to validate the configuration provided for this <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscriber.html">Subscriber</a>. The idea is that this method fail if the Config or EventSubscriberConfiguration don't contain all the necessary information for this AuthProvider to perform its <em>auth scheme</em>.  <a href="class_event_manager_1_1_business_logic_1_1_entities_1_1_auth_1_1_none_auth.html#a2ffe668486bbd578c5ea9f945c95bd77">More...</a><br /></td></tr>
 <tr class="separator:a2ffe668486bbd578c5ea9f945c95bd77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
 <p class="definition">Definition at line <a class="el" href="_none_auth_8cs_source.html#l00013">13</a> of file <a class="el" href="_none_auth_8cs_source.html">NoneAuth.cs</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="abec9a8e3f7d62f74a00afe835ac4e5be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abec9a8e3f7d62f74a00afe835ac4e5be">&#9670;&nbsp;</a></span>SendEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt;HttpResponseMessage&gt; EventManager.BusinessLogic.Entities.Auth.NoneAuth.SendEvent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a>&#160;</td>
+          <td class="paramname"><em>e</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a>&#160;</td>
+          <td class="paramname"><em>s</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This method is used to have an auth handler send the specified <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> using the configuration provided in the <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>The <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> we want to send</td></tr>
+    <tr><td class="paramname">s</td><td>The <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a> that specifies how the event is to be sent</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The response message obtained after sending the event</dd></dl>
+
+<p>Implements <a class="el" href="interface_event_manager_1_1_business_logic_1_1_interfaces_1_1_i_auth_handler.html#a5ce4d08992da9b4ddfaba18f6a7c4afd">EventManager.BusinessLogic.Interfaces.IAuthHandler</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="_none_auth_8cs_source.html#l00020">20</a> of file <a class="el" href="_none_auth_8cs_source.html">NoneAuth.cs</a>.</p>
+
+</div>
+</div>
 <a id="a2ffe668486bbd578c5ea9f945c95bd77"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2ffe668486bbd578c5ea9f945c95bd77">&#9670;&nbsp;</a></span>Valid()</h2>
 
@@ -140,19 +182,19 @@ async Task&lt; HttpResponseMessage &gt;&#160;</td><td class="memItemRight" valig
       </table>
 </div><div class="memdoc">
 
-<p>Checks for the required properties to be present </p>
+<p>This method is used to validate the configuration provided for this <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscriber.html">Subscriber</a>. The idea is that this method fail if the Config or EventSubscriberConfiguration don't contain all the necessary information for this AuthProvider to perform its <em>auth scheme</em>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">config</td><td></td></tr>
-    <tr><td class="paramname">eventSubscriberConfiguration</td><td></td></tr>
+    <tr><td class="paramname">config</td><td>The Config we want to check</td></tr>
+    <tr><td class="paramname">eventSubscriberConfiguration</td><td>The EventSubscriberConfiguration we want to check</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Bool indicating if is valid or not</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A bool specifying whether the configuration is valid or not</dd></dl>
 
-<p>Implements <a class="el" href="interface_event_manager_1_1_business_logic_1_1_interfaces_1_1_i_auth_handler.html">EventManager.BusinessLogic.Interfaces.IAuthHandler</a>.</p>
+<p>Implements <a class="el" href="interface_event_manager_1_1_business_logic_1_1_interfaces_1_1_i_auth_handler.html#a5c1faa946710c8e00d5d9342bb9efeed">EventManager.BusinessLogic.Interfaces.IAuthHandler</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_none_auth_8cs_source.html#l00033">33</a> of file <a class="el" href="_none_auth_8cs_source.html">NoneAuth.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_none_auth_8cs_source.html#l00027">27</a> of file <a class="el" href="_none_auth_8cs_source.html">NoneAuth.cs</a>.</p>
 
 </div>
 </div>

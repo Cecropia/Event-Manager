@@ -88,20 +88,93 @@ $(document).ready(function(){initNavTree('class_event_manager_1_1_business_logic
 <div class="title">EventManager.BusinessLogic.Entities.CustomAuthProviderRegistry Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>The <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_custom_auth_provider_registry.html" title="The CustomAuthProviderRegistry is just an encapsulation for a Dictionary that associates string with ...">CustomAuthProviderRegistry</a> is just an encapsulation for a Dictionary that associates string with the Action that can be invoked by auth adapters.  
+ <a href="class_event_manager_1_1_business_logic_1_1_entities_1_1_custom_auth_provider_registry.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af1f9317e4e06cf6ac4ef0df11037e2b6"><td class="memItemLeft" align="right" valign="top"><a id="af1f9317e4e06cf6ac4ef0df11037e2b6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>AddAuthProvider</b> (string name, Action&lt; HttpRequestMessage, <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a> &gt; act)</td></tr>
+<tr class="memitem:af1f9317e4e06cf6ac4ef0df11037e2b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_custom_auth_provider_registry.html#af1f9317e4e06cf6ac4ef0df11037e2b6">AddAuthProvider</a> (string name, Action&lt; HttpRequestMessage, <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a> &gt; act)</td></tr>
+<tr class="memdesc:af1f9317e4e06cf6ac4ef0df11037e2b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an auth provider method to the registry using the specified name  <a href="class_event_manager_1_1_business_logic_1_1_entities_1_1_custom_auth_provider_registry.html#af1f9317e4e06cf6ac4ef0df11037e2b6">More...</a><br /></td></tr>
 <tr class="separator:af1f9317e4e06cf6ac4ef0df11037e2b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb0055ed2424cd421f76061c7a90aa8f"><td class="memItemLeft" align="right" valign="top"><a id="acb0055ed2424cd421f76061c7a90aa8f"></a>
-Action&lt; HttpRequestMessage, <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetAuthProvider</b> (string name)</td></tr>
+<tr class="memitem:acb0055ed2424cd421f76061c7a90aa8f"><td class="memItemLeft" align="right" valign="top">Action&lt; HttpRequestMessage, <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_custom_auth_provider_registry.html#acb0055ed2424cd421f76061c7a90aa8f">GetAuthProvider</a> (string name)</td></tr>
+<tr class="memdesc:acb0055ed2424cd421f76061c7a90aa8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Obtains the callable auth provider method with the specified name. Returns null if there is no element with <code>name</code>.  <a href="class_event_manager_1_1_business_logic_1_1_entities_1_1_custom_auth_provider_registry.html#acb0055ed2424cd421f76061c7a90aa8f">More...</a><br /></td></tr>
 <tr class="separator:acb0055ed2424cd421f76061c7a90aa8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_custom_auth_provider_registry_8cs_source.html#l00007">7</a> of file <a class="el" href="_custom_auth_provider_registry_8cs_source.html">CustomAuthProviderRegistry.cs</a>.</p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+<div class="textblock"><p>The <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_custom_auth_provider_registry.html" title="The CustomAuthProviderRegistry is just an encapsulation for a Dictionary that associates string with ...">CustomAuthProviderRegistry</a> is just an encapsulation for a Dictionary that associates string with the Action that can be invoked by auth adapters. </p>
+
+<p class="definition">Definition at line <a class="el" href="_custom_auth_provider_registry_8cs_source.html#l00011">11</a> of file <a class="el" href="_custom_auth_provider_registry_8cs_source.html">CustomAuthProviderRegistry.cs</a>.</p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="af1f9317e4e06cf6ac4ef0df11037e2b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1f9317e4e06cf6ac4ef0df11037e2b6">&#9670;&nbsp;</a></span>AddAuthProvider()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void EventManager.BusinessLogic.Entities.CustomAuthProviderRegistry.AddAuthProvider </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; HttpRequestMessage, <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a> &gt;&#160;</td>
+          <td class="paramname"><em>act</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Add an auth provider method to the registry using the specified name </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>Name with which the method will be registered</td></tr>
+    <tr><td class="paramname">act</td><td>Action that can then be called by auth adapters</td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_custom_auth_provider_registry_8cs_source.html#l00025">25</a> of file <a class="el" href="_custom_auth_provider_registry_8cs_source.html">CustomAuthProviderRegistry.cs</a>.</p>
+
+</div>
+</div>
+<a id="acb0055ed2424cd421f76061c7a90aa8f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb0055ed2424cd421f76061c7a90aa8f">&#9670;&nbsp;</a></span>GetAuthProvider()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Action&lt;HttpRequestMessage, <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a>&gt; EventManager.BusinessLogic.Entities.CustomAuthProviderRegistry.GetAuthProvider </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Obtains the callable auth provider method with the specified name. Returns null if there is no element with <code>name</code>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>Name of the action we want to get</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The action with the specified <code>name</code> or <code>null</code> if said name doesn't exist</dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_custom_auth_provider_registry_8cs_source.html#l00036">36</a> of file <a class="el" href="_custom_auth_provider_registry_8cs_source.html">CustomAuthProviderRegistry.cs</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>BusinessLogic/Entities/<a class="el" href="_custom_auth_provider_registry_8cs_source.html">CustomAuthProviderRegistry.cs</a></li>
 </ul>
 </div><!-- contents -->

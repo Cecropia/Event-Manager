@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['queue_38',['Queue',['../class_event_manager_1_1_business_logic_1_1_entities_1_1_queue.html',1,'EventManager::BusinessLogic::Entities']]],
-  ['queueitem_39',['QueueItem',['../class_event_manager_1_1_business_logic_1_1_entities_1_1_queue_item.html',1,'EventManager::BusinessLogic::Entities']]]
+  ['process_40',['Process',['../class_event_manager_1_1_business_logic_1_1_entities_1_1_queue.html#afe4af7fe7cd33b2e8b9f995929bb900d',1,'EventManager::BusinessLogic::Entities::Queue']]]
 ];

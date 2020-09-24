@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['process_94',['Process',['../class_event_manager_1_1_business_logic_1_1_entities_1_1_queue.html#afe4af7fe7cd33b2e8b9f995929bb900d',1,'EventManager::BusinessLogic::Entities::Queue']]]
+  ['makecallrequest_98',['MakeCallRequest',['../class_event_manager_1_1_business_logic_1_1_extensions_1_1_http_client_extension.html#a376b08c8bdea94e1a676a7a149411ca2',1,'EventManager::BusinessLogic::Extensions::HttpClientExtension']]]
 ];
