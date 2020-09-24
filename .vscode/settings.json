@@ -5,6 +5,7 @@
     },
     "files.watcherExclude": {
         "**/bin/**": true,
-        "**/obj/**": true
+        "**/obj/**": true,
+        "docs": true
     }
 }
