@@ -5,8 +5,8 @@ using System.Net.Http;
 namespace EventManager.BusinessLogic.Entities
 {
     /// <summary>
-    /// The CustomAuthProviderRegistry is just an encapsulation for a dictionary
-    /// that associates string with the Action that should be invoked by auth providers.
+    /// The CustomAuthProviderRegistry is just an encapsulation for a Dictionary
+    /// that associates string with the Action that can be invoked by auth adapters.
     /// </summary>
     public class CustomAuthProviderRegistry
     {
