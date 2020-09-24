@@ -32,7 +32,6 @@ namespace EventManager.BusinessLogic.Entities.Auth
         }
         public async Task<HttpResponseMessage> SendEvent(Event e, Subscription subscription)
         {
-
             Log.Debug("CustomAuthAdapter.SendEvent");
 
             HttpClient _client = new HttpClient();
