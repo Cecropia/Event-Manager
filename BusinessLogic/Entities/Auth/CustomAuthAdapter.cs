@@ -1,4 +1,5 @@
 using EventManager.BusinessLogic.Entities.Configuration;
+using EventManager.BusinessLogic.Entities.Exceptions;
 using EventManager.BusinessLogic.Interfaces;
 using Newtonsoft.Json;
 using Serilog;
@@ -51,14 +52,31 @@ namespace EventManager.BusinessLogic.Entities.Auth
                 throw new ApplicationException($"Expected a custom auth provider with name '{this.authConfig.CustomAuthProviderName}' but none was found in the register");
             }
 
-            // allow the provider to modify the request and additional info as it sees fit
-            customProvider(
-                request,
-                subscription // TODO: implement deep copy for subscription
-            );
+            try
+            {
+                // allow the provider to modify the request and additional info as it sees fit
+                customProvider(
+                    request,
+                    subscription // TODO: implement deep copy for subscription
+                );
 
-            HttpResponseMessage httpResponseMessage = await _client.SendAsync(request, CancellationToken.None);
-            return httpResponseMessage;
+                HttpResponseMessage httpResponseMessage = await _client.SendAsync(request, CancellationToken.None);
+                return httpResponseMessage;
+
+            }
+            catch (CustomAuthFailureException ex)
+            {
+                // if there are any "controlled" errors during the custom auth then log it and return a 
+                // dummy failed response
+                Log.Error("CustomAuthAdapter.SendEvent - There was an error while executing the custom auth " +
+                            "provider method: " + ex.Message + " - Stacktrace: " + ex.StackTrace);
+
+                return new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
+            }
+
         }
 
 
