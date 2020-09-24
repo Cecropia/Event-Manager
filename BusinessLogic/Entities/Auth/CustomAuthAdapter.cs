@@ -54,7 +54,7 @@ namespace EventManager.BusinessLogic.Entities.Auth
             if (customProvider == null)
             {
                 // TODO handle this error
-                throw new ApplicationException($"Expected a custom auth provider with name '{this.authConfig.CustomAuthProviderName}' but none was found in the register");
+                throw new KeyNotFoundException($"Expected a custom auth provider with name '{this.authConfig.CustomAuthProviderName}' but none was found in the register");
             }
 
             try
@@ -62,7 +62,7 @@ namespace EventManager.BusinessLogic.Entities.Auth
                 // allow the provider to modify the request and additional info as it sees fit
                 customProvider(
                     request,
-                    subscription // TODO: implement deep copy for subscription
+                    subscription
                 );
 
                 HttpResponseMessage httpResponseMessage = await _client.SendAsync(request, CancellationToken.None);
@@ -94,7 +94,7 @@ namespace EventManager.BusinessLogic.Entities.Auth
                 config.BaseURL,
                 eventSubscriberConfiguration.Endpoint,
                 eventSubscriberConfiguration.Method,
-                // TODO: this doesn't really work because `Valid` gets called before the custom auth provider is instantiated
+                // > the line below doesn't really work because `Valid` gets called before the custom auth provider is instantiated
                 // EventDispatcher.Instance.customAuthProvider.GetAuthProvider(this.authConfig.CustomAuthProviderName)?.ToString()
             };
 
