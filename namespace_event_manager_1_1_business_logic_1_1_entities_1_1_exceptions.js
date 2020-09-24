@@ -1,0 +1,4 @@
+var namespace_event_manager_1_1_business_logic_1_1_entities_1_1_exceptions =
+[
+    [ "CustomAuthFailureException", "class_event_manager_1_1_business_logic_1_1_entities_1_1_exceptions_1_1_custom_auth_failure_exception.html", "class_event_manager_1_1_business_logic_1_1_entities_1_1_exceptions_1_1_custom_auth_failure_exception" ]
+];
