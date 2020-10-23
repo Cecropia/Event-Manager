@@ -99,9 +99,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a25d3e9cbc41292e7ed65a615c8a8240b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event_dispatcher.html#a25d3e9cbc41292e7ed65a615c8a8240b">RegisterLocal</a> (string eventName, Action&lt; <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> &gt; callback)</td></tr>
 <tr class="memdesc:a25d3e9cbc41292e7ed65a615c8a8240b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allows to assing a function to be executed when an <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> is called.  <a href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event_dispatcher.html#a25d3e9cbc41292e7ed65a615c8a8240b">More...</a><br /></td></tr>
 <tr class="separator:a25d3e9cbc41292e7ed65a615c8a8240b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe169f76ebb23492a4c678d86bff83c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event_dispatcher.html#afe169f76ebb23492a4c678d86bff83c5">SimpleDispatch</a> (string eventName, string eventPayload)</td></tr>
-<tr class="memdesc:afe169f76ebb23492a4c678d86bff83c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is a simplified version of the <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event_dispatcher.html#a67a3a4b48b34fd720a1a26eaef5eae4e" title="Fire an Event to be listened by a Subscription">EventDispatcher.Dispatch(Event)</a> method. But instead of accepting a complete <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a>, it takes the event name and payload and proceeds to build an event out of these.  <a href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event_dispatcher.html#afe169f76ebb23492a4c678d86bff83c5">More...</a><br /></td></tr>
-<tr class="separator:afe169f76ebb23492a4c678d86bff83c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a930c00c47b2d8fe67282d8822f303241"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event_dispatcher.html#a930c00c47b2d8fe67282d8822f303241">SimpleDispatch</a> (string eventName, string eventPayload, Dictionary&lt; string, string &gt; urlTemplateValues=null)</td></tr>
+<tr class="memdesc:a930c00c47b2d8fe67282d8822f303241"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is a simplified version of the <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event_dispatcher.html#a67a3a4b48b34fd720a1a26eaef5eae4e" title="Fire an Event to be listened by a Subscription">EventDispatcher.Dispatch(Event)</a> method. But instead of accepting a complete <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a>, it takes the event name and payload and proceeds to build an event out of these.  <a href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event_dispatcher.html#a930c00c47b2d8fe67282d8822f303241">More...</a><br /></td></tr>
+<tr class="separator:a930c00c47b2d8fe67282d8822f303241"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67a3a4b48b34fd720a1a26eaef5eae4e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event_dispatcher.html#a67a3a4b48b34fd720a1a26eaef5eae4e">Dispatch</a> (<a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> e)</td></tr>
 <tr class="memdesc:a67a3a4b48b34fd720a1a26eaef5eae4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fire an <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> to be listened by a <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a>  <a href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event_dispatcher.html#a67a3a4b48b34fd720a1a26eaef5eae4e">More...</a><br /></td></tr>
 <tr class="separator:a67a3a4b48b34fd720a1a26eaef5eae4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -146,7 +146,7 @@ static <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_event_dispatcher_8cs_source.html#l00118">118</a> of file <a class="el" href="_event_dispatcher_8cs_source.html">EventDispatcher.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_dispatcher_8cs_source.html#l00122">122</a> of file <a class="el" href="_event_dispatcher_8cs_source.html">EventDispatcher.cs</a>.</p>
 
 </div>
 </div>
@@ -217,8 +217,8 @@ static <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1
 
 </div>
 </div>
-<a id="afe169f76ebb23492a4c678d86bff83c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe169f76ebb23492a4c678d86bff83c5">&#9670;&nbsp;</a></span>SimpleDispatch()</h2>
+<a id="a930c00c47b2d8fe67282d8822f303241"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a930c00c47b2d8fe67282d8822f303241">&#9670;&nbsp;</a></span>SimpleDispatch()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -233,7 +233,13 @@ static <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>eventPayload</em>&#160;</td>
+          <td class="paramname"><em>eventPayload</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Dictionary&lt; string, string &gt;&#160;</td>
+          <td class="paramname"><em>urlTemplateValues</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -244,6 +250,7 @@ static <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1
 </div><div class="memdoc">
 
 <p>This is a simplified version of the <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event_dispatcher.html#a67a3a4b48b34fd720a1a26eaef5eae4e" title="Fire an Event to be listened by a Subscription">EventDispatcher.Dispatch(Event)</a> method. But instead of accepting a complete <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a>, it takes the event name and payload and proceeds to build an event out of these. </p>
+<p>Optionally, also a dictionary of urlTemplateValues that will be used to replace the templateKeys in the endpoint. By default this dictionary is null.</p>
 <p>The event dispatched with this method will have a <code>Timestamp</code> of <code>DateTime.UtcNow</code>, and the <code>ExtraParams</code> will be <code>null. If you need to specify any of these then use the normal</code>Dispatch` method.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -253,7 +260,7 @@ static <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_event_dispatcher_8cs_source.html#l00103">103</a> of file <a class="el" href="_event_dispatcher_8cs_source.html">EventDispatcher.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_dispatcher_8cs_source.html#l00106">106</a> of file <a class="el" href="_event_dispatcher_8cs_source.html">EventDispatcher.cs</a>.</p>
 
 </div>
 </div>
