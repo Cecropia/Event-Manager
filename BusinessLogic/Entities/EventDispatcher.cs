@@ -95,19 +95,23 @@ namespace EventManager.BusinessLogic.Entities
         /// of accepting a complete <see cref="Event"/>, it takes the event name and payload and proceeds to build
         /// an event out of these.
         /// 
+        /// Optionally, also a dictionary of urlTemplateValues that will be used to replace the templateKeys in the
+        /// endpoint. By default this dictionary is null.
+        /// 
         /// The event dispatched with this method will have a `Timestamp` of `DateTime.UtcNow`, and the `ExtraParams`
         /// will be `null. If you need to specify any of these then use the normal `Dispatch` method.
         /// </summary>
         /// <param name="eventName"></param>
         /// <param name="eventPayload"></param>
-        public void SimpleDispatch(string eventName, string eventPayload)
+        public void SimpleDispatch(string eventName, string eventPayload, Dictionary<string, string> urlTemplateValues = null)
         {
             this.Dispatch(new Event
             {
                 Name = eventName,
                 Payload = eventPayload,
                 Timestamp = DateTime.UtcNow,
-                ExtraParams = null
+                ExtraParams = null,
+                UrlTemplateValues = urlTemplateValues
             });
         }
 
@@ -117,13 +121,14 @@ namespace EventManager.BusinessLogic.Entities
         /// <param name="e">Event object</param>
         public void Dispatch(Event e)
         {
-            Log.Debug("EventDispatcher.Dispatch");
+            Log.Debug($"EventDispatcher.Dispatch: Dispatching event with name '{e.Name}'");
             List<Subscription> subscriptions;
             if (eventSubscriptions.TryGetValue(e.Name, out subscriptions))
             {
-                Log.Debug("EventDispatcher.Dispatch: Found value");
+                Log.Debug($"EventDispatcher.Dispatch: Found subscriptions to event '{e.Name}', enqueuing items");
                 foreach (Subscription subscription in subscriptions)
                 {
+                    Log.Debug($"EventDispatcher.Dispatch: Enqueuing item for subscriber '{subscription.Subscriber.Name}', for event '{e.Name}'");
                     QueueItem queueItem = new QueueItem()
                     {
                         Guid = Guid.NewGuid(),
@@ -137,7 +142,7 @@ namespace EventManager.BusinessLogic.Entities
             }
             else
             {
-                Log.Debug("EventDispatcher.Dispatch: Value not found");
+                Log.Debug($"EventDispatcher.Dispatch: Nothing will be dispatched - No subscriptions found for event '{e.Name}'");
             }
         }
     }
