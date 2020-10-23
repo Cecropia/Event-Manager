@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace EventManager.BusinessLogic.Entities
 {
@@ -24,6 +26,42 @@ namespace EventManager.BusinessLogic.Entities
         {
         }
 
+        private Subscription Clone()
+        {
+            return (Subscription)this.MemberwiseClone();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="endpoint"></param>
+        /// <param name="templateValues"></param>
+        /// <returns></returns>
+        private string ApplyTemplateValuesToUri(string endpoint, Dictionary<string, string> templateValues)
+        {
+            Log.Debug("Subscription.ApplyTemplateValuesToUri: applying string template replacement to endpoint");
+
+            var rx = new Regex(@"\{\{.*?\}\}",
+                    RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+            var matches = rx.Matches(endpoint);
+            foreach (Match m in matches)
+            {
+                Log.Debug($"Subscription.ApplyTemplateValuesToUri: replacing match for {m.Value}");
+
+                var val = m.Value;
+                var key = val.Replace("{{", "").Replace("}}", "");
+
+                // key should exist, otherwise this is an error
+                endpoint = endpoint.Replace(
+                    m.Value,
+                    HttpUtility.UrlEncode(templateValues[key])
+                );
+            }
+
+            return endpoint;
+        }
+
         /// <summary>
         /// SendEvent function
         /// </summary>
@@ -33,10 +71,28 @@ namespace EventManager.BusinessLogic.Entities
         {
             HttpResponseMessage httpResponseMessage;
 
+            // if the event `isExternal` then send it to the external recipient, otherwise
+            // route it to the appropriate internal handler
             if (this.IsExternal)
             {
                 Log.Debug("Subscription.SendEvent: isExternal true");
-                return await this.Auth.SendEvent(_event, this);
+
+                var specificSubscription = this;
+
+                // if it is external then also update the URL (if necessary)
+                if (_event.UrlTemplateValues != null && _event.UrlTemplateValues.Count > 0)
+                {
+                    // set specificSubscription to be a clone of `this` so that we don't affect `this`'s
+                    // values
+                    specificSubscription = this.Clone();
+
+                    specificSubscription.EndPoint = this.ApplyTemplateValuesToUri(
+                        specificSubscription.EndPoint,
+                        _event.UrlTemplateValues
+                    );
+                }
+
+                return await this.Auth.SendEvent(_event, specificSubscription);
             }
             else
             {
