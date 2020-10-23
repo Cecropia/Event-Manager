@@ -26,25 +26,23 @@ namespace EventManager.BusinessLogic.Entities
         {
         }
 
-        private Subscription Clone()
-        {
-            return (Subscription)this.MemberwiseClone();
-        }
-
         /// <summary>
-        /// 
+        /// This method can be used to replace the templateValues in the provided "str". Each template value in str 
+        /// should have the shape "{{templateValueName}}". This method will find all instances of said templateValues
+        /// and look for "templateValueName" in the <paramref name="templateValues"/> dictionary. Note that if no templateValue
+        /// is found for a key then this is an error and it will throw a <see cref="System.Collections.Generic.KeyNotFoundException"/>.
         /// </summary>
-        /// <param name="endpoint"></param>
+        /// <param name="str"></param>
         /// <param name="templateValues"></param>
-        /// <returns></returns>
-        private string ApplyTemplateValuesToUri(string endpoint, Dictionary<string, string> templateValues)
+        /// <returns>A new string with all the template values replaced</returns>
+        private string ApplyTemplateValuesToString(string str, Dictionary<string, string> templateValues)
         {
             Log.Debug("Subscription.ApplyTemplateValuesToUri: applying string template replacement to endpoint");
 
             var rx = new Regex(@"\{\{.*?\}\}",
                     RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-            var matches = rx.Matches(endpoint);
+            var matches = rx.Matches(str);
             foreach (Match m in matches)
             {
                 Log.Debug($"Subscription.ApplyTemplateValuesToUri: replacing match for {m.Value}");
@@ -53,13 +51,13 @@ namespace EventManager.BusinessLogic.Entities
                 var key = val.Replace("{{", "").Replace("}}", "");
 
                 // key should exist, otherwise this is an error
-                endpoint = endpoint.Replace(
+                str = str.Replace(
                     m.Value,
                     HttpUtility.UrlEncode(templateValues[key])
                 );
             }
 
-            return endpoint;
+            return str;
         }
 
         /// <summary>
@@ -84,9 +82,9 @@ namespace EventManager.BusinessLogic.Entities
                 {
                     // set specificSubscription to be a clone of `this` so that we don't affect `this`'s
                     // values
-                    specificSubscription = this.Clone();
+                    specificSubscription = (Subscription)this.MemberwiseClone();
 
-                    specificSubscription.EndPoint = this.ApplyTemplateValuesToUri(
+                    specificSubscription.EndPoint = this.ApplyTemplateValuesToString(
                         specificSubscription.EndPoint,
                         _event.UrlTemplateValues
                     );
