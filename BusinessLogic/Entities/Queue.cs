@@ -130,7 +130,9 @@ namespace EventManager.BusinessLogic.Entities
                     else
                     {
                         // If the SendEvent fails (not OK) then sent back to the queue for it to be processed again
-                        Log.Debug("Queue.ProcessItem, Item Processed FAILED, back to queue " + item.Guid.ToString());
+                        Log.Error($"Queue.ProcessItem, Sending Item back to queue - Item ID: '{item.Guid.ToString()}' - " +
+                                  $"Process FAILED with code '{httpResponseMessage.StatusCode}' " +
+                                  $"and the following message: {httpResponseMessage.Content.ReadAsStringAsync().Result}");
                         Items.Enqueue(item);
 
                         if (Interlocked.Equals(running, 0)) //!running
