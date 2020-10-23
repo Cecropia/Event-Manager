@@ -28,7 +28,7 @@ namespace EventManager.BusinessLogic.Entities
 
         /// <summary>
         /// This method can be used to replace the templateValues in the provided "str". Each template value in str 
-        /// should have the shape "{{templateValueName}}". This method will find all instances of said templateValues
+        /// should have the shape "{templateValueName}". This method will find all instances of said templateValues
         /// and look for "templateValueName" in the <paramref name="templateValues"/> dictionary. Note that if no templateValue
         /// is found for a key then this is an error and it will throw a <see cref="System.Collections.Generic.KeyNotFoundException"/>.
         /// </summary>
@@ -39,7 +39,7 @@ namespace EventManager.BusinessLogic.Entities
         {
             Log.Debug("Subscription.ApplyTemplateValuesToUri: applying string template replacement to endpoint");
 
-            var rx = new Regex(@"\{\{.*?\}\}",
+            var rx = new Regex(@"\{.*?\}",
                     RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
             var matches = rx.Matches(str);
@@ -48,7 +48,7 @@ namespace EventManager.BusinessLogic.Entities
                 Log.Debug($"Subscription.ApplyTemplateValuesToUri: replacing match for {m.Value}");
 
                 var val = m.Value;
-                var key = val.Replace("{{", "").Replace("}}", "");
+                var key = val.Replace("{", "").Replace("}", "");
 
                 // key should exist, otherwise this is an error
                 str = str.Replace(
