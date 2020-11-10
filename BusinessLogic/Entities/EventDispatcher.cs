@@ -2,6 +2,7 @@ using EventManager.Data;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 
 namespace EventManager.BusinessLogic.Entities
@@ -41,6 +42,29 @@ namespace EventManager.BusinessLogic.Entities
         public void Register(Subscription subscription)
         {
             Log.Debug("EventDispatcher.Register");
+
+            // If there is already a synchronous subscription then raise an exception
+            if (subscription.Synchronous)
+            {
+                Subscription syncSubscription = GetSynchronousSubscription(subscription.EventName);
+                if (syncSubscription != null)
+                {
+                    string check;
+                    if (syncSubscription.IsExternal)
+                    {
+                        // check appsettings
+                        check = "appsettings.json 'EventManager' block";
+                    }
+                    else
+                    {
+                        // check  RegisterLocal methods
+                        check = "your 'EventDispatcher.RegisterLocal' calls";
+                    }
+
+                    throw new ArgumentException($"EventDispatcher.Register: '{syncSubscription.Subscriber.Name}' already exists for '{syncSubscription.EventName}'.\nOnly one Synchronous Subscription is allowed. \nCheck {check}, for 'Synchronous: true'.");
+                }
+            }
+
             List<Subscription> subscriptions;
             if (eventSubscriptions.TryGetValue(subscription.EventName, out subscriptions))
             {
@@ -61,13 +85,14 @@ namespace EventManager.BusinessLogic.Entities
         /// </summary>
         /// <param name="eventName">Name of the event to attach the callback.</param>
         /// <param name="callback">Lambda that will be executed when the event is fired,</param>
-        public void RegisterLocal(string eventName, Action<Event> callback)
+        public void RegisterLocal(string eventName, Func<Event, HttpResponseMessage> callback, bool synchronous = false)
         {
-            List<Action<Event>> callbacks = new List<Action<Event>>();
+            List<Func<Event, HttpResponseMessage>> callbacks = new List<Func<Event, HttpResponseMessage>>
+            {
+                callback
+            };
 
-            callbacks.Add(callback);
-
-            Subscriber subscriber = new Subscriber()
+            Subscriber subscriber = new Subscriber(callback.Method.Name)
             {
                 Config = new SubscriberConfig
                 {
@@ -76,6 +101,7 @@ namespace EventManager.BusinessLogic.Entities
                 }
             };
 
+
             Subscription subscription = new Subscription()
             {
                 Subscriber = subscriber,
@@ -83,7 +109,8 @@ namespace EventManager.BusinessLogic.Entities
                 Method = HttpMethod.Post,
                 EndPoint = EventManagerConstants.EventReceptionPath,
                 CallBacks = callbacks,
-                IsExternal = false
+                IsExternal = false,
+                Synchronous = synchronous
             };
 
             Register(subscription);
@@ -119,14 +146,16 @@ namespace EventManager.BusinessLogic.Entities
         /// Fire an Event to be listened by a Subscription
         /// </summary>
         /// <param name="e">Event object</param>
-        public void Dispatch(Event e)
+        public HttpResponseMessage Dispatch(Event e)
         {
             Log.Debug($"EventDispatcher.Dispatch: Dispatching event with name '{e.Name}'");
             List<Subscription> subscriptions;
+
             if (eventSubscriptions.TryGetValue(e.Name, out subscriptions))
             {
                 Log.Debug($"EventDispatcher.Dispatch: Found subscriptions to event '{e.Name}', enqueuing items");
-                foreach (Subscription subscription in subscriptions)
+
+                foreach (Subscription subscription in subscriptions.Where(x => !x.Synchronous))
                 {
                     Log.Debug($"EventDispatcher.Dispatch: Enqueuing item for subscriber '{subscription.Subscriber.Name}', for event '{e.Name}'");
                     QueueItem queueItem = new QueueItem()
@@ -139,11 +168,40 @@ namespace EventManager.BusinessLogic.Entities
 
                     queue.Add(queueItem);
                 }
+                // move to last because the return will break the other Queue items
+                Subscription synchronousSubscription = subscriptions.FirstOrDefault(s => s.Synchronous);
+
+                if (synchronousSubscription != null)
+                {
+                    Log.Debug($"EventDispatcher.Dispatch: Executing Synchronous call for Event: '{e.Name}'");
+                    return synchronousSubscription.SendEvent(e).Result;
+                }
+                // if there is no synchronous event then just return an empty response with 200 status code
+
+                return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
             }
             else
             {
                 Log.Debug($"EventDispatcher.Dispatch: Nothing will be dispatched - No subscriptions found for event '{e.Name}'");
+                return new HttpResponseMessage(System.Net.HttpStatusCode.NotFound);
             }
+        }
+
+        /// <summary>
+        /// Get if exists a Synchronous Subscription per EventName
+        /// </summary>
+        /// <param name="eventName">Name of the Event</param>
+        /// <returns>Subscription</returns>
+        public Subscription GetSynchronousSubscription(string eventName)
+        {
+            Subscription syncSubscription = null;
+            List<Subscription> subscriptions;
+            eventSubscriptions.TryGetValue(eventName, out subscriptions);
+            if (subscriptions != null)
+            {
+                syncSubscription = subscriptions.FirstOrDefault(s => s.Synchronous == true);
+            }
+            return syncSubscription;
         }
     }
 }
