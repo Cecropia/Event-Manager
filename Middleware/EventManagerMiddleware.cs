@@ -5,12 +5,14 @@ using EventManager.BusinessLogic.Interfaces;
 using EventManager.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -52,9 +54,9 @@ namespace EventManager.Middleware
                     }
                     else
                     {
-                        List<Action<Event>> callbacks = new List<Action<Event>>();
+                        List<Func<Event, HttpResponseMessage>> callbacks = new List<Func<Event, HttpResponseMessage>>();
 
-                        Subscriber subscriber = new Subscriber()
+                        Subscriber subscriber = new Subscriber(eventSubscriberConf.Name)
                         {
                             Config = new SubscriberConfig
                             {
@@ -73,7 +75,8 @@ namespace EventManager.Middleware
                             EndPoint = eventSubscriberConf.Endpoint,
                             CallBacks = callbacks,
                             IsExternal = true,
-                            Auth = auth
+                            Auth = auth,
+                            Synchronous = eventSubscriberConf.Synchronous
                         };
 
                         EventDispatcher.Register(subscription);
@@ -100,12 +103,41 @@ namespace EventManager.Middleware
                     Name = (string)json["Name"],
                     Timestamp = (DateTime)json["Timestamp"],
                     Payload = json["Payload"].ToString(Formatting.None),
-                    ExtraParams = json["ExtraParams"].ToObject<JObject>(),
+                    ExtraParams = json["ExtraParams"].ToObject<JObject>()
                 };
 
-                EventDispatcher.Dispatch(e);
+                HttpResponseMessage httpResponseMessage = EventDispatcher.Dispatch(e);
 
-                httpContext.Response.StatusCode = 200;
+                // if the response message is `null` then it means the event had no synchronous callbacks and that all
+                // async callbacks have been queued for execution, see we can return 200 status
+                if (httpResponseMessage == null)
+                {
+                    httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
+                }
+                else
+                {
+                    httpContext.Response.StatusCode = (int)httpResponseMessage.StatusCode;
+
+                    string contents = "";
+                    if (httpResponseMessage.Content != null)
+                    {
+                        contents = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                        // add content headers
+                        foreach (KeyValuePair<string, IEnumerable<string>> item in httpResponseMessage.Content?.Headers.AsEnumerable())
+                        {
+                            httpContext.Response.Headers.Add(item.Key, new StringValues(item.Value.ToArray()));
+                        }
+                    }
+
+                    foreach (KeyValuePair<string, IEnumerable<string>> item in httpResponseMessage.Headers.AsEnumerable())
+                    {
+                        httpContext.Response.Headers.Add(item.Key, new StringValues(item.Value.ToArray()));
+                    }
+
+                    // we send the contents response of the EventDispatcher.Dispatch we just called
+                    await HttpResponseWritingExtensions.WriteAsync(httpContext.Response, contents);
+                }
             }
             else
             {

@@ -17,8 +17,9 @@ namespace EventManager.BusinessLogic.Entities
         public Subscriber Subscriber { get; set; }
         public HttpMethod Method { get; set; }
         public string EndPoint { get; set; }
-        public List<Action<Event>> CallBacks { get; set; }
+        public List<Func<Event, HttpResponseMessage>> CallBacks { get; set; }
         public bool IsExternal { get; set; }
+        public bool Synchronous { get; set; }
 
         public IAuthHandler Auth { get; set; }
 
@@ -99,7 +100,15 @@ namespace EventManager.BusinessLogic.Entities
                 {
                     foreach (var callback in CallBacks)
                     {
+                        // if the subscription is synchronous then it should only have one callback
+                        // so we're safe returning its response here
+                        if (this.Synchronous)
+                        {
+                            return callback.Invoke(_event);
+                        }
+
                         callback.Invoke(_event);
+
                         //TODO Handle async actions
                     }
                     string SerializedString = "true";
