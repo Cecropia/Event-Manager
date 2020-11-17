@@ -56,9 +56,7 @@ namespace ExecutableTest
                 ExtraParams = json["ExtraParams"].ToObject<JObject>(),
             };
 
-            List<Action<Event>> callbacks = new List<Action<Event>>();
-
-            Subscriber subscriber = new Subscriber()
+            Subscriber subscriber = new Subscriber("Subscriber Name 1")
             {
                 Config = new SubscriberConfig
                 {
@@ -73,7 +71,7 @@ namespace ExecutableTest
                 EventName = "event_name",
                 Method = HttpMethod.Post,
                 EndPoint = EventManagerConstants.EventReceptionPath,
-                CallBacks = callbacks
+                CallBacks = new List<Func<Event, HttpResponseMessage>>()
             };
 
             QueueItem q1 = new QueueItem()
@@ -139,16 +137,17 @@ namespace ExecutableTest
                 .WriteTo.Console()
                 .CreateLogger();
 
-            List<Action<Event>> callbacks = new List<Action<Event>>();
+            List<Func<Event, HttpResponseMessage>> callbacks = new List<Func<Event, HttpResponseMessage>>();
 
-            Action<Event> callback = (Event e) => {
+            Func<Event, HttpResponseMessage> callback = (Event e) => {
                 Log.Debug("---- Call from Subscription callback");
+                return null;
             };
 
             callbacks.Add(callback);
 
 
-            Subscriber subscriber = new Subscriber()
+            Subscriber subscriber = new Subscriber("Subscriber Name 2")
             {
                 Config = new SubscriberConfig
                 {
@@ -164,15 +163,22 @@ namespace ExecutableTest
                 Method = HttpMethod.Post,
                 EndPoint = EventManagerConstants.EventReceptionPath,
                 CallBacks = callbacks,
-                IsExternal = false
+                IsExternal = false,
+                Synchronous = false
             };
+
 
             EventDispatcher.Register(subscription);
 
+            EventDispatcher.RegisterLocal("careers_salesforce_after_skill_created", OnEvent1, false);
+
             EventDispatcher.RegisterLocal("careers_salesforce_after_skill_created", (Event e) =>
             {
-                Log.Debug("---- Call from RegisterLocal callback");
-            });
+                Log.Debug("---- Call from RegisterLocal callback 2");
+                return null;
+            }, true);
+
+            
 
             //-----------------------------------------------//
 
@@ -187,7 +193,7 @@ namespace ExecutableTest
                     {'item2':'value2'}
                   ],
                   'Timestamp': '2020-05-22T21:28:06.496Z',
-                  'ExtraParams': { 'name': 'value'}, 
+                  'ExtraParams': { 'name': 'value'}
                 }
             ";
 
@@ -209,6 +215,12 @@ namespace ExecutableTest
 
 
             Console.ReadKey();
+        }
+
+        private static HttpResponseMessage OnEvent1(Event e)
+        {
+            Log.Debug("---- Call from RegisterLocal callback");
+            return null;
         }
 
     }

@@ -10,5 +10,6 @@ namespace EventManager.BusinessLogic.Entities.Configuration
         public string Name { get; set; } 
         public string Method { get; set; } = "POST";
         public string Endpoint { get; set; } = null;
+        public bool Synchronous { get; set; } = false;
     }
 }
