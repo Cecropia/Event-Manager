@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['httpclientextension_34',['HttpClientExtension',['../class_event_manager_1_1_business_logic_1_1_extensions_1_1_http_client_extension.html',1,'EventManager::BusinessLogic::Extensions']]]
+  ['httpclientextension_35',['HttpClientExtension',['../class_event_manager_1_1_business_logic_1_1_extensions_1_1_http_client_extension.html',1,'EventManager::BusinessLogic::Extensions']]]
 ];
