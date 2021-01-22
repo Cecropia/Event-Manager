@@ -56,17 +56,13 @@ namespace EventManager.BusinessLogic.Factories
             AuthConfig authConfig = externalService.Auth;
             Enum.TryParse(authConfig.Type, out AuthType authType);
 
-            if (authType != AuthType.OAuthClientPassword)
+            if (eventSubscriberConf.Endpoint == null)
             {
-                // do not concatenate
-                if (eventSubscriberConf.Endpoint == null)
-                {
-                    eventSubscriberConf.Endpoint = externalService.Config.BaseURL + EventManagerConstants.EventReceptionPath;
-                }
-                else
-                {
-                    eventSubscriberConf.Endpoint = externalService.Config.BaseURL + eventSubscriberConf.Endpoint;
-                }
+                eventSubscriberConf.Endpoint = externalService.Config.BaseURL + EventManagerConstants.EventReceptionPath;
+            }
+            else
+            {
+                eventSubscriberConf.Endpoint = externalService.Config.BaseURL + eventSubscriberConf.Endpoint;
             }
 
             return eventSubscriberConf.Endpoint;

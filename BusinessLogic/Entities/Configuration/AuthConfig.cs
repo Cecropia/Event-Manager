@@ -14,7 +14,6 @@ namespace EventManager.BusinessLogic.Entities.Configuration
         //public string Username { get; set; }
         // Username is also used for OAuth
         // Password is also used for OAuth
-        public string Token { get; set; }
 
         /// <summary>
         /// Is used to specify the `customAuthProvider` name that this
