@@ -11,7 +11,7 @@ var hierarchy =
     [ "EventManager.Middleware.EventManagerMiddleware", "class_event_manager_1_1_middleware_1_1_event_manager_middleware.html", null ],
     [ "EventManager.Middleware.EventManagerMiddlewareExtensions", "class_event_manager_1_1_middleware_1_1_event_manager_middleware_extensions.html", null ],
     [ "EventManager.BusinessLogic.Entities.Configuration.EventSubscriberConfiguration", "class_event_manager_1_1_business_logic_1_1_entities_1_1_configuration_1_1_event_subscriber_configuration.html", null ],
-    [ "Exception", null, [
+    [ "System.Exception", null, [
       [ "EventManager.BusinessLogic.Entities.Exceptions.CustomAuthFailureException", "class_event_manager_1_1_business_logic_1_1_entities_1_1_exceptions_1_1_custom_auth_failure_exception.html", null ]
     ] ],
     [ "EventManager.BusinessLogic.Entities.Configuration.ExternalServiceConfiguration", "class_event_manager_1_1_business_logic_1_1_entities_1_1_configuration_1_1_external_service_configuration.html", null ],

@@ -10,5 +10,11 @@ var namespace_event_manager_1_1_business_logic_1_1_entities =
     [ "QueueItem", "class_event_manager_1_1_business_logic_1_1_entities_1_1_queue_item.html", "class_event_manager_1_1_business_logic_1_1_entities_1_1_queue_item" ],
     [ "Subscriber", "class_event_manager_1_1_business_logic_1_1_entities_1_1_subscriber.html", "class_event_manager_1_1_business_logic_1_1_entities_1_1_subscriber" ],
     [ "SubscriberConfig", "class_event_manager_1_1_business_logic_1_1_entities_1_1_subscriber_config.html", "class_event_manager_1_1_business_logic_1_1_entities_1_1_subscriber_config" ],
-    [ "Subscription", "class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html", "class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription" ]
+    [ "Subscription", "class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html", "class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription" ],
+    [ "AuthType", "namespace_event_manager_1_1_business_logic_1_1_entities.html#a7be63c9bbb69dfb850efda4449f461c3", [
+      [ "None", "namespace_event_manager_1_1_business_logic_1_1_entities.html#a7be63c9bbb69dfb850efda4449f461c3a6adf97f83acf6453d4a6a4b1070f3754", null ],
+      [ "Basic", "namespace_event_manager_1_1_business_logic_1_1_entities.html#a7be63c9bbb69dfb850efda4449f461c3a972e73b7a882d0802a4e3a16946a2f94", null ],
+      [ "OAuthClientPassword", "namespace_event_manager_1_1_business_logic_1_1_entities.html#a7be63c9bbb69dfb850efda4449f461c3a58cb1e91b7d650c21249b4bcc6afdef0", null ],
+      [ "CustomAuth", "namespace_event_manager_1_1_business_logic_1_1_entities.html#a7be63c9bbb69dfb850efda4449f461c3abf71b0b30dbc482bd398f04a8b43e956", null ]
+    ] ]
 ];
