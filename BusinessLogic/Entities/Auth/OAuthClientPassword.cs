@@ -22,13 +22,14 @@ namespace EventManager.BusinessLogic.Entities.Auth
         private readonly string ClientSecret;
         private readonly string Username;
         private readonly string Password;
-        private readonly string Token;
 
         // Token cache
         private string AccessToken;
-        private string InstanceUrl;
 
-
+        /// <summary>
+        /// see https://tools.ietf.org/html/rfc6749#section-4.3
+        /// </summary>
+        /// <param name="authConfig"></param>
         public OAuthClientPassword(AuthConfig authConfig)
         {
             this.authConfig = authConfig;
@@ -37,20 +38,19 @@ namespace EventManager.BusinessLogic.Entities.Auth
             ClientSecret = authConfig.ClientSecret;
             Username = authConfig.Username;
             Password = authConfig.Password;
-            Token = authConfig.Token;
         }
         public async Task<HttpResponseMessage> SendEvent(Event e, Subscription subscription)
         {
-            Log.Debug("BasicAuth.SendEvent");
+            Log.Debug("OAuthClientPassword.SendEvent");
 
             HttpResponseMessage httpResponseMessage;
             HttpResponseMessage response;
             string jsonResponse;
 
+            // obtain access token only if necessary
             if (AccessToken == null)
             {
-                // login
-                Log.Debug("OAuthClientPassword.SendEvent: login");
+                Log.Debug($"OAuthClientPassword.SendEvent: Obtaining access token for {subscription.Subscriber.Name}");
                 using (var client = new HttpClient())
                 {
                     var encodedContent = new FormUrlEncodedContent(new Dictionary<string, string>
@@ -59,96 +59,70 @@ namespace EventManager.BusinessLogic.Entities.Auth
                             {"client_id", ClientId},
                             {"client_secret", ClientSecret},
                             {"username", Username},
-                            {"password", Password + Token}
+                            {"password", Password}
                         }
                     );
                     response = await client.PostAsync(LoginEndpoint, encodedContent);
                     jsonResponse = response.Content.ReadAsStringAsync().Result;
                 }
-                Log.Debug($"OAuthClientPassword.SendEvent, Response: {jsonResponse}");
+
+                Log.Debug($"OAuthClientPassword.SendEvent, Credentials response: {jsonResponse}");
 
                 Dictionary<string, string> values = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
                 if (values.ContainsKey("error"))
                 {
-                    string SerializedString = "error";
-                    httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent(SerializedString, Encoding.UTF8, "application/json") };
+                    // fail if there was an error
+                    httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                    {
+                        Content = new StringContent("error", Encoding.UTF8, "application/json")
+                    };
                     return httpResponseMessage;
                 }
-                else
-                {
-                    AccessToken = values["access_token"];
-                    InstanceUrl = values["instance_url"];
-                }
+
+                // otherwise set access token property
+                AccessToken = values["access_token"];
             }
 
-            Log.Debug("OAuthClientPassword.SendEvent: No Login");
-            Log.Debug($"OAuthClientPassword.SendEvent, AccessToken: {AccessToken}");
-            Log.Debug($"OAuthClientPassword.SendEvent, InstanceUrl: {InstanceUrl}");
+            Log.Debug($"OAuthClientPassword.SendEvent, Using access_token: {AccessToken}");
 
-            HttpClient _client = new HttpClient();
-
-            string restRequest = InstanceUrl + subscription.EndPoint;
-            HttpRequestMessage request = new HttpRequestMessage(subscription.Method, restRequest);
+            // build request
+            HttpRequestMessage request = new HttpRequestMessage(subscription.Method, subscription.EndPoint);
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(TypeJson));
             request.Content = new StringContent(e.Payload, Encoding.UTF8, TypeJson);
 
-            httpResponseMessage = await _client.SendAsync(request);
+            // send request
+            using (var client = new HttpClient())
+            {
+                Log.Debug($"OAuthClientPassword.SendEvent, Sending request for '{subscription.Subscriber.Name}' to {subscription.Method} {subscription.EndPoint}");
+                httpResponseMessage = await client.SendAsync(request);
+            }
 
             Log.Debug($"OAuthClientPassword.SendEvent, StatusCode:  {httpResponseMessage.StatusCode}");
 
             string responseResult = await httpResponseMessage.Content.ReadAsStringAsync();
 
+            // Check for errors: EM should trigger a retry if the response is invalid
             if (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 Log.Debug($"OAuthClientPassword.SendEvent, ERROR : BadRequest: " + responseResult);
                 return httpResponseMessage;
             }
+            else if (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                // According to https://tools.ietf.org/id/draft-ietf-oauth-v2-bearer-09.xml the server should return a
+                // HTTP 401 (Unauthorized) status code if the access token has expired.
 
-            Log.Debug($"OAuthClientPassword.SendEvent, Result:{responseResult}");
+                // setting the token to Null will mean that it will be re-obtained on the next request
+                this.AccessToken = null;
+                return httpResponseMessage;
+            }
 
-
-            ResetAccessTokenIfErrorInResponseMessage(responseResult);
-
-            // TODO: add helper, to dispatch the response and use the same call in other Auths
+            Log.Debug($"OAuthClientPassword.SendEvent, Response: {responseResult}");
 
             return httpResponseMessage;
         }
 
-        /// <summary>
-        /// Takes an HttpResponseMessage, verifies if it has an INVALID_SESSION_ID error
-        /// if so, then sets the AccesToken to null, so it can log in again
-        /// </summary>
-        /// <param name="response"></param>
-        private void ResetAccessTokenIfErrorInResponseMessage(string responseResult)
-        {
-
-            // if error code string is there, then parse
-            if (responseResult.IndexOf("errorCode") != -1)
-            {
-                // try to parse the json to find the error code
-                try
-                {
-                    List<Dictionary<string, string>> resultValues = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(responseResult);
-
-                    if (resultValues.Count > 0)
-                    {
-                        Dictionary<string, string> firstItem = resultValues[0];
-                        if (firstItem.ContainsKey("errorCode") && firstItem["errorCode"] == "INVALID_SESSION_ID")
-                        {
-                            Log.Debug($"OAuthClientPassword.ResetAccessTokenIfErrorInResponseMessage: AccessToken set to `null` ");
-                            AccessToken = null;
-                        }
-                    }
-                }
-                catch (JsonReaderException)
-                {
-                    // JsonConvert fails because the Dictionary<string, string> is not met,
-                    // ergo there is no error but the normal data
-                    // so nothing to do here, just continue
-                }
-            }
-        }
 
         public bool Valid(Config config, EventSubscriberConfiguration eventSubscriberConfiguration)
         {
@@ -161,7 +135,6 @@ namespace EventManager.BusinessLogic.Entities.Auth
                 authConfig.ClientSecret,
                 authConfig.Username,
                 authConfig.Password,
-                authConfig.Token,
                 eventSubscriberConfiguration.Endpoint,
                 eventSubscriberConfiguration.Method
             };

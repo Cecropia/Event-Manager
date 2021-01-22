@@ -30,7 +30,6 @@ namespace EventManager.BusinessLogic.Extensions
             HttpRequestMessage request = new HttpRequestMessage(method, endpoint);
             request.Headers.Accept.Clear();
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(TypeJson));
-            //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             request.Content = new StringContent(body, Encoding.UTF8, TypeJson);
 
             HttpResponseMessage httpResponseMessage = await _client.SendAsync(request, CancellationToken.None);
