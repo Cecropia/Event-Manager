@@ -48,7 +48,7 @@ namespace ExecutableTest
 
             JObject json = JObject.Parse(responseBody);
 
-            contextValues = new Dictionary<string, IEnumerable<string>> { {"context1", "context1value"}, {"context2", "context2value"} };
+            var contextValues = new Dictionary<string, IEnumerable<string>> { {"context1", new List<string>() { "1", "2", "3"} }, {"context2", new List<string>() { "1", "2", "3"} } };
 
             Event ev = new Event()
             {
@@ -203,7 +203,7 @@ namespace ExecutableTest
 
             JObject json = JObject.Parse(responseBody);
 
-            contextValues = new Dictionary<string, IEnumerable<string>> { {"context1", "context1value"}, {"context2", "context2value"} };
+            var contextValues = new Dictionary<string, IEnumerable<string>> { {"context1", new List<string>() { "1", "2", "3"} }, {"context2", new List<string>() { "1", "2", "3"} } };
 
             Event ev = new Event()
             {
