@@ -41,12 +41,14 @@ namespace ExecutableTest
                     {'item2':'value2'}
                   ],
                   'Timestamp': '2020-05-22T21:28:06.496Z',
-                  'ExtraParams': { 'name': 'value'}, 
+                  'ExtraParams': { 'name': 'value'},
                 }
             ";
 
 
             JObject json = JObject.Parse(responseBody);
+
+            contextValues = new Dictionary<string, IEnumerable<string>> { {"context1", "context1value"}, {"context2", "context2value"} };
 
             Event ev = new Event()
             {
@@ -54,6 +56,7 @@ namespace ExecutableTest
                 Timestamp = (DateTime)json["Timestamp"],
                 Payload = json["Payload"].ToString(),
                 ExtraParams = json["ExtraParams"].ToObject<JObject>(),
+                ContextHeaders = contextValues
             };
 
             Subscriber subscriber = new Subscriber("Subscriber Name 1")
@@ -178,7 +181,7 @@ namespace ExecutableTest
                 return null;
             }, true);
 
-            
+
 
             //-----------------------------------------------//
 
@@ -200,12 +203,15 @@ namespace ExecutableTest
 
             JObject json = JObject.Parse(responseBody);
 
+            contextValues = new Dictionary<string, IEnumerable<string>> { {"context1", "context1value"}, {"context2", "context2value"} };
+
             Event ev = new Event()
             {
                 Name = (string)json["Name"],
                 Timestamp = (DateTime)json["Timestamp"],
                 Payload = json["Payload"].ToString(),
                 ExtraParams = json["ExtraParams"].ToObject<JObject>(),
+                ContextHeaders = contextValues
             };
 
 
