@@ -121,16 +121,16 @@ namespace EventManager.BusinessLogic.Entities
         /// This is a simplified version of the <see cref="EventDispatcher.Dispatch(Event)"/> method. But instead
         /// of accepting a complete <see cref="Event"/>, it takes the event name and payload and proceeds to build
         /// an event out of these.
-        /// 
+        ///
         /// Optionally, also a dictionary of urlTemplateValues that will be used to replace the templateKeys in the
         /// endpoint. By default this dictionary is null.
-        /// 
+        ///
         /// The event dispatched with this method will have a `Timestamp` of `DateTime.UtcNow`, and the `ExtraParams`
         /// will be `null. If you need to specify any of these then use the normal `Dispatch` method.
         /// </summary>
         /// <param name="eventName"></param>
         /// <param name="eventPayload"></param>
-        public void SimpleDispatch(string eventName, string eventPayload, Dictionary<string, string> urlTemplateValues = null)
+        public void SimpleDispatch(string eventName, string eventPayload, Dictionary<string, string> urlTemplateValues = null,List<Subscription> subscriptions = null)
         {
             this.Dispatch(new Event
             {
@@ -139,52 +139,46 @@ namespace EventManager.BusinessLogic.Entities
                 Timestamp = DateTime.UtcNow,
                 ExtraParams = null,
                 UrlTemplateValues = urlTemplateValues
-            });
+            }, subscriptions );
         }
 
         /// <summary>
         /// Fire an Event to be listened by a Subscription
         /// </summary>
         /// <param name="e">Event object</param>
-        public HttpResponseMessage Dispatch(Event e)
+        public HttpResponseMessage Dispatch(Event e, List<Subscription> subscriptions = null)
         {
             Log.Debug($"EventDispatcher.Dispatch: Dispatching event with name '{e.Name}'");
-            List<Subscription> subscriptions;
-
-            if (eventSubscriptions.TryGetValue(e.Name, out subscriptions))
-            {
-                Log.Debug($"EventDispatcher.Dispatch: Found subscriptions to event '{e.Name}', enqueuing items");
-
-                foreach (Subscription subscription in subscriptions.Where(x => !x.Synchronous))
-                {
-                    Log.Debug($"EventDispatcher.Dispatch: Enqueuing item for subscriber '{subscription.Subscriber.Name}', for event '{e.Name}'");
-                    QueueItem queueItem = new QueueItem()
-                    {
-                        Guid = Guid.NewGuid(),
-                        Event = e,
-                        Subscription = subscription,
-                        Timestamp = DateTime.Now
-                    };
-
-                    queue.Add(queueItem);
-                }
-                // move to last because the return will break the other Queue items
-                Subscription synchronousSubscription = subscriptions.FirstOrDefault(s => s.Synchronous);
-
-                if (synchronousSubscription != null)
-                {
-                    Log.Debug($"EventDispatcher.Dispatch: Executing Synchronous call for Event: '{e.Name}'");
-                    return synchronousSubscription.SendEvent(e).Result;
-                }
-                // if there is no synchronous event then just return an empty response with 200 status code
-
-                return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+            
+            if(subscriptions == null && eventSubscriptions.ContainsKey(e.Name)){
+                subscriptions = eventSubscriptions[e.Name];
             }
-            else
+
+            foreach (Subscription subscription in subscriptions.Where(x => !x.Synchronous))
             {
-                Log.Debug($"EventDispatcher.Dispatch: Nothing will be dispatched - No subscriptions found for event '{e.Name}'");
-                return new HttpResponseMessage(System.Net.HttpStatusCode.NotFound);
+                Log.Debug($"EventDispatcher.Dispatch: Enqueuing item for subscriber '{subscription.Subscriber.Name}', for event '{e.Name}'");
+                QueueItem queueItem = new QueueItem()
+                {
+                    Guid = Guid.NewGuid(),
+                    Event = e,
+                    Subscription = subscription,
+                    Timestamp = DateTime.Now
+                };
+
+                queue.Add(queueItem);
             }
+            // move to last because the return will break the other Queue items
+            Subscription synchronousSubscription = subscriptions.FirstOrDefault(s => s.Synchronous);
+
+            if (synchronousSubscription != null)
+            {
+                Log.Debug($"EventDispatcher.Dispatch: Executing Synchronous call for Event: '{e.Name}'");
+                return synchronousSubscription.SendEvent(e).Result;
+            }
+            // if there is no synchronous event then just return an empty response with 200 status code
+
+            return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+
         }
 
         /// <summary>
