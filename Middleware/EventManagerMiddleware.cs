@@ -103,7 +103,8 @@ namespace EventManager.Middleware
                     Name = (string)json["Name"],
                     Timestamp = (DateTime)json["Timestamp"],
                     Payload = json["Payload"].ToString(Formatting.None),
-                    ExtraParams = json["ExtraParams"].ToObject<JObject>()
+                    ExtraParams = json["ExtraParams"].ToObject<JObject>(),
+                    ContextHeaders = httpContext.Request.Headers.ToDictionary(a => a.Key, a => (IEnumerable<string>) a.Value)
                 };
 
                 HttpResponseMessage httpResponseMessage = EventDispatcher.Dispatch(e);

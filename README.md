@@ -4,6 +4,8 @@
 
 ![Deploy package to NuGet.org](https://github.com/Cecropia/Event-Manager/workflows/Deploy%20package%20to%20NuGet.org/badge.svg)
 
+[Download from NuGet](https://www.nuget.org/packages/Cecropia.Utilities.EventManager/)
+
 For the moment, reference this project's [wiki](https://github.com/Cecropia/Event-Manager/wiki) for more information.
 
 ## Useful stuff
