@@ -148,8 +148,11 @@ namespace EventManager.BusinessLogic.Entities
         /// <param name="e">Event object</param>
         public HttpResponseMessage Dispatch(Event e, List<Subscription> subscriptions = null)
         {
+
+            subscriptions = subscriptions??new List<Subscription>();
+
             Log.Debug($"EventDispatcher.Dispatch: Dispatching event with name '{e.Name}'");
-            
+
             if(subscriptions == null && eventSubscriptions.ContainsKey(e.Name)){
                 subscriptions = eventSubscriptions[e.Name];
             }
