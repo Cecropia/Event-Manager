@@ -2,6 +2,7 @@ var class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription =
 [
     [ "Subscription", "class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html#a2d1fa6454ff7bf8b239e922cf9e202ec", null ],
     [ "SendEvent", "class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html#a1ca8a3cc5a42d2ce9f4940880618e4ff", null ],
+    [ "Metadata", "class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html#a84d7fea1bb5b4fb894c2c7172eb20d06", null ],
     [ "Auth", "class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html#ad35f9c266ed720f7fc932c05fdb85205", null ],
     [ "CallBacks", "class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html#affd983bebbd59e55c495e2847c11d242", null ],
     [ "EndPoint", "class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html#aa4ab75821011b4d67f68f7223c36192c", null ],

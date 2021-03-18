@@ -152,6 +152,9 @@ static <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1
 </div><div class="memdoc">
 
 <p>Fire an <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> to be listened by a <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a> </p>
+<p>Optionally:</p><ul>
+<li>subscriptions List&lt;Subscription&gt; that will be used to replace the local list of destinations used as endpoint. By default the List is null.</li>
+</ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">e</td><td><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a> object</td></tr>
@@ -159,7 +162,7 @@ static <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_event_dispatcher_8cs_source.html#l00149">149</a> of file <a class="el" href="_event_dispatcher_8cs_source.html">EventDispatcher.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_dispatcher_8cs_source.html#l00157">157</a> of file <a class="el" href="_event_dispatcher_8cs_source.html">EventDispatcher.cs</a>.</p>
 
 </div>
 </div>
@@ -188,7 +191,7 @@ static <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_subscription.html">Subscription</a></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_event_dispatcher_8cs_source.html#l00189">189</a> of file <a class="el" href="_event_dispatcher_8cs_source.html">EventDispatcher.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_dispatcher_8cs_source.html#l00200">200</a> of file <a class="el" href="_event_dispatcher_8cs_source.html">EventDispatcher.cs</a>.</p>
 
 </div>
 </div>
@@ -304,7 +307,10 @@ static <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1
 </div><div class="memdoc">
 
 <p>This is a simplified version of the EventDispatcher.Dispatch(Event) method. But instead of accepting a complete <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1_1_event.html">Event</a>, it takes the event name and payload and proceeds to build an event out of these. </p>
-<p>Optionally, also a dictionary of urlTemplateValues that will be used to replace the templateKeys in the endpoint. By default this dictionary is null.</p>
+<p>Optionally:</p><ul>
+<li>urlTemplateValues dictionary that will be used to replace the templateKeys in the endpoint. By default this dictionary is null.</li>
+<li>subscriptions List&lt;Subscription&gt; that will be used to replace the local list of destinations used as endpoint. By default the List is null.</li>
+</ul>
 <p>The event dispatched with this method will have a <code>Timestamp</code> of <code>DateTime.UtcNow</code>, and the <code>ExtraParams</code> will be <code>null. If you need to specify any of these then use the normal</code>Dispatch` method.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -314,7 +320,7 @@ static <a class="el" href="class_event_manager_1_1_business_logic_1_1_entities_1
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_event_dispatcher_8cs_source.html#l00133">133</a> of file <a class="el" href="_event_dispatcher_8cs_source.html">EventDispatcher.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_dispatcher_8cs_source.html#l00136">136</a> of file <a class="el" href="_event_dispatcher_8cs_source.html">EventDispatcher.cs</a>.</p>
 
 </div>
 </div>
