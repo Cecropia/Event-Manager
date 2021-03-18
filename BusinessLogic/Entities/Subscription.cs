@@ -20,15 +20,15 @@ namespace EventManager.BusinessLogic.Entities
         public List<Func<Event, HttpResponseMessage>> CallBacks { get; set; }
         public bool IsExternal { get; set; }
         public bool Synchronous { get; set; }
-
         public IAuthHandler Auth { get; set; }
+        public Dictionary<string, object> Metadata = new Dictionary<string, object>();
 
         public Subscription()
         {
         }
 
         /// <summary>
-        /// This method can be used to replace the templateValues in the provided "str". Each template value in str 
+        /// This method can be used to replace the templateValues in the provided "str". Each template value in str
         /// should have the shape "{templateValueName}". This method will find all instances of said templateValues
         /// and look for "templateValueName" in the <paramref name="templateValues"/> dictionary. Note that if no templateValue
         /// is found for a key then this is an error and it will throw a <see cref="System.Collections.Generic.KeyNotFoundException"/>.
