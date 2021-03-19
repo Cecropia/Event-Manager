@@ -122,8 +122,11 @@ namespace EventManager.BusinessLogic.Entities
         /// of accepting a complete <see cref="Event"/>, it takes the event name and payload and proceeds to build
         /// an event out of these.
         ///
-        /// Optionally, also a dictionary of urlTemplateValues that will be used to replace the templateKeys in the
+        /// Optionally:
+        /// - urlTemplateValues dictionary that will be used to replace the templateKeys in the
         /// endpoint. By default this dictionary is null.
+        /// - subscriptions List<Subscription> that will be used to replace the local list of destinations used as
+        /// endpoint. By default the List is null.
         ///
         /// The event dispatched with this method will have a `Timestamp` of `DateTime.UtcNow`, and the `ExtraParams`
         /// will be `null. If you need to specify any of these then use the normal `Dispatch` method.
@@ -144,6 +147,11 @@ namespace EventManager.BusinessLogic.Entities
 
         /// <summary>
         /// Fire an Event to be listened by a Subscription
+        ///
+        /// Optionally:
+        /// - subscriptions List<Subscription> that will be used to replace the local list of destinations used as
+        /// endpoint. By default the List is null.
+        ///
         /// </summary>
         /// <param name="e">Event object</param>
         public HttpResponseMessage Dispatch(Event e, List<Subscription> subscriptions = null)
