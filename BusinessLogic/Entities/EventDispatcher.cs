@@ -160,8 +160,10 @@ namespace EventManager.BusinessLogic.Entities
             Log.Debug($"EventDispatcher.Dispatch: Dispatching event with name '{e.Name}'");
 
             if(subscriptions == null && eventSubscriptions.ContainsKey(e.Name)){
-                subscriptions = eventSubscriptions[e.Name] ?? new List<Subscription>();
+                subscriptions = eventSubscriptions[e.Name];
             }
+
+            subscriptions = subscriptions ?? new List<Subscription>();
 
             foreach (Subscription subscription in subscriptions.Where(x => !x.Synchronous))
             {
