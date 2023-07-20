@@ -10,7 +10,7 @@ namespace EventManager.BusinessLogic.Entities
     public sealed class EventDispatcher
     {
         private static readonly Lazy<EventDispatcher> lazy = new Lazy<EventDispatcher>(() => new EventDispatcher());
-        public static EventDispatcher Instance => lazy.Value;
+        public static EventDispatcher Instance { get { return lazy.Value; } }
 
         private static Queue queue;
 
