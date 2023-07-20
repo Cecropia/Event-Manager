@@ -17,7 +17,7 @@ namespace EventManager.BusinessLogic.Entities.Auth
         {
             this.authConfig = authConfig;
         }
-        public async Task<HttpResponseMessage> SendEvent(Event e, Subscription s)
+        public async Task<HttpResponseMessage> SendEvent(Event e, Subscription s, List<KeyValuePair<string, string>> paramsList = null)
         {
             Log.Debug("NoneAuth.SendEvent");
 

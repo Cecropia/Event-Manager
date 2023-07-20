@@ -11,7 +11,7 @@ namespace EventManager.BusinessLogic.Factories
     public class AuthFactory
     {
         /// <summary>
-        /// Retrieves the appropiate Authorization
+        /// Retrieves the appropriate Authorization
         /// </summary>
         /// <param name="auth">Object representing the EventManager.Auth section inside AppSettings.json</param>
         /// <returns>Authorization as an IAuthHandler</returns>
