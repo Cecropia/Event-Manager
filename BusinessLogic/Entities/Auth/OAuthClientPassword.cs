@@ -47,7 +47,7 @@ namespace EventManager.BusinessLogic.Entities.Auth
             HttpResponseMessage response;
             string jsonResponse;
 
-            // obtain access token only if necessary
+            // obtain access token only if necessary.
             if (AccessToken == null)
             {
                 Log.Debug($"OAuthClientPassword.SendEvent: Obtaining access token for {subscription.Subscriber.Name}");
