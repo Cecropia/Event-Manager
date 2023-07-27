@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 
 namespace EventManager.BusinessLogic.Interfaces
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Every AuthHandler implements a different authentication mechanism, and is an abstraction layer
     /// that is in charge of sending Events to Subscribers respecting the Subscriber configuration.
@@ -17,8 +19,9 @@ namespace EventManager.BusinessLogic.Interfaces
         /// </summary>
         /// <param name="e">The Event we want to send</param>
         /// <param name="s">The Subscription that specifies how the event is to be sent</param>
+        /// <param name="paramsList">Takes a list of key value pairs used for further configure the behavior of the send event logic</param>
         /// <returns>The response message obtained after sending the event</returns>
-        Task<HttpResponseMessage> SendEvent(Event e, Subscription s);
+        Task<HttpResponseMessage> SendEvent(Event e, Subscription s, List<KeyValuePair<string, string>> paramsList = null);
 
         /// <summary>
         /// This method is used to validate the configuration provided for this Subscriber. The idea

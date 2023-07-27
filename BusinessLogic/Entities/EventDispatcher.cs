@@ -19,7 +19,6 @@ namespace EventManager.BusinessLogic.Entities
         // Dictionary is Thread safe.
         private static Dictionary<string, List<Subscription>> eventSubscriptions;
 
-
         /// <summary>
         /// EventDispatcher Constructor, only invoked through Instance
         /// </summary>
@@ -49,24 +48,17 @@ namespace EventManager.BusinessLogic.Entities
                 Subscription syncSubscription = GetSynchronousSubscription(subscription.EventName);
                 if (syncSubscription != null)
                 {
-                    string check;
-                    if (syncSubscription.IsExternal)
-                    {
+                    string check =
                         // check appsettings
-                        check = "appsettings.json 'EventManager' block";
-                    }
-                    else
-                    {
+                        syncSubscription.IsExternal ? "appsettings.json 'EventManager' block" :
                         // check  RegisterLocal methods
-                        check = "your 'EventDispatcher.RegisterLocal' calls";
-                    }
+                        "your 'EventDispatcher.RegisterLocal' calls";
 
                     throw new ArgumentException($"EventDispatcher.Register: '{syncSubscription.Subscriber.Name}' already exists for '{syncSubscription.EventName}'.\nOnly one Synchronous Subscription is allowed. \nCheck {check}, for 'Synchronous: true'.");
                 }
             }
 
-            List<Subscription> subscriptions;
-            if (eventSubscriptions.TryGetValue(subscription.EventName, out subscriptions))
+            if (eventSubscriptions.TryGetValue(subscription.EventName, out var subscriptions))
             {
                 subscriptions.Add(subscription);
             }
@@ -81,10 +73,11 @@ namespace EventManager.BusinessLogic.Entities
         }
 
         /// <summary>
-        /// Allows to assing a function to be executed when an Event is called.
+        /// Allows to assign a function to be executed when an Event is called.
         /// </summary>
         /// <param name="eventName">Name of the event to attach the callback.</param>
         /// <param name="callback">Lambda that will be executed when the event is fired,</param>
+        /// <param name="synchronous"></param>
         public void RegisterLocal(string eventName, Func<Event, HttpResponseMessage> callback, bool synchronous = false)
         {
             List<Func<Event, HttpResponseMessage>> callbacks = new List<Func<Event, HttpResponseMessage>>
@@ -118,14 +111,14 @@ namespace EventManager.BusinessLogic.Entities
         }
 
         /// <summary>
-        /// This is a simplified version of the <see cref="EventDispatcher.Dispatch(Event)"/> method. But instead
+        /// This is a simplified version of the <see cref="EventDispatcher.Dispatch(Event,List{EventManager.BusinessLogic.Entities.Subscription})"/> method. But instead
         /// of accepting a complete <see cref="Event"/>, it takes the event name and payload and proceeds to build
         /// an event out of these.
         ///
         /// Optionally:
         /// - urlTemplateValues dictionary that will be used to replace the templateKeys in the
         /// endpoint. By default this dictionary is null.
-        /// - subscriptions List<Subscription> that will be used to replace the local list of destinations used as
+        /// - subscriptions <see cref="List{Subscription}"/> that will be used to replace the local list of destinations used as
         /// endpoint. By default the List is null.
         ///
         /// The event dispatched with this method will have a `Timestamp` of `DateTime.UtcNow`, and the `ExtraParams`
@@ -133,7 +126,12 @@ namespace EventManager.BusinessLogic.Entities
         /// </summary>
         /// <param name="eventName"></param>
         /// <param name="eventPayload"></param>
-        public void SimpleDispatch(string eventName, string eventPayload, Dictionary<string, string> urlTemplateValues = null,List<Subscription> subscriptions = null)
+        /// <param name="urlTemplateValues">dictionary that will be used to replace the templateKeys in the
+        ///     endpoint. By default this dictionary is null.</param>
+        /// <param name="subscriptions"><see cref="List{Subscription}"/> that will be used to replace the local list of destinations used as
+        ///     endpoint. By default the List is null.</param>
+        /// <param name="paramsList">takes a list of key value pairs used for further configure the behavior of the dispatch logic</param>
+        public void SimpleDispatch(string eventName, string eventPayload, Dictionary<string, string> urlTemplateValues = null,List<Subscription> subscriptions = null, List<KeyValuePair<string, string>> paramsList = null)
         {
             this.Dispatch(new Event
             {
@@ -142,25 +140,28 @@ namespace EventManager.BusinessLogic.Entities
                 Timestamp = DateTime.UtcNow,
                 ExtraParams = null,
                 UrlTemplateValues = urlTemplateValues
-            }, subscriptions );
+            }, subscriptions, paramsList);
         }
 
         /// <summary>
         /// Fire an Event to be listened by a Subscription
         ///
         /// Optionally:
-        /// - subscriptions List<Subscription> that will be used to replace the local list of destinations used as
+        /// - subscriptions <see cref="List{Subscription}"/> that will be used to replace the local list of destinations used as
         /// endpoint. By default the List is null.
         ///
         /// </summary>
         /// <param name="e">Event object</param>
-        public HttpResponseMessage Dispatch(Event e, List<Subscription> subscriptions = null)
+        /// <param name="subscriptions"><see cref="List{Subscription}"/> that will be used to replace the local list of destinations used as
+        /// endpoint. By default the List is null.</param>
+        /// <param name="paramsList">takes a list of key value pairs used for further configure the behavior of the dispatch logic</param>
+        public HttpResponseMessage Dispatch(Event e, List<Subscription> subscriptions = null, List<KeyValuePair<string,string>> paramsList = null)
         {
 
             Log.Debug($"EventDispatcher.Dispatch: Dispatching event with name '{e.Name}'");
 
-            if(subscriptions == null && eventSubscriptions.ContainsKey(e.Name)){
-                subscriptions = eventSubscriptions[e.Name];
+            if(subscriptions == null && eventSubscriptions.TryGetValue(e.Name, out var eventSubscription)){
+                subscriptions = eventSubscription;
             }
 
             subscriptions = subscriptions ?? new List<Subscription>();
@@ -173,7 +174,8 @@ namespace EventManager.BusinessLogic.Entities
                     Guid = Guid.NewGuid(),
                     Event = e,
                     Subscription = subscription,
-                    Timestamp = DateTime.Now
+                    Timestamp = DateTime.Now,
+                    ParamsList = paramsList
                 };
 
                 queue.Add(queueItem);
@@ -181,15 +183,10 @@ namespace EventManager.BusinessLogic.Entities
             // move to last because the return will break the other Queue items
             Subscription synchronousSubscription = subscriptions.FirstOrDefault(s => s.Synchronous);
 
-            if (synchronousSubscription != null)
-            {
-                Log.Debug($"EventDispatcher.Dispatch: Executing Synchronous call for Event: '{e.Name}'");
-                return synchronousSubscription.SendEvent(e).Result;
-            }
             // if there is no synchronous event then just return an empty response with 200 status code
-
-            return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
-
+            if (synchronousSubscription == null) return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+            Log.Debug($"EventDispatcher.Dispatch: Executing Synchronous call for Event: '{e.Name}'");
+            return synchronousSubscription.SendEvent(e, paramsList).Result;
         }
 
         /// <summary>
@@ -200,8 +197,7 @@ namespace EventManager.BusinessLogic.Entities
         public Subscription GetSynchronousSubscription(string eventName)
         {
             Subscription syncSubscription = null;
-            List<Subscription> subscriptions;
-            eventSubscriptions.TryGetValue(eventName, out subscriptions);
+            eventSubscriptions.TryGetValue(eventName, out var subscriptions);
             if (subscriptions != null)
             {
                 syncSubscription = subscriptions.FirstOrDefault(s => s.Synchronous == true);

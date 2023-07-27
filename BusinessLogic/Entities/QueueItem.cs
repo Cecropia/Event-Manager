@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 
@@ -13,5 +14,6 @@ namespace EventManager.BusinessLogic.Entities
         public DateTime Timestamp { get; set; }
         public DateTime LastTry { get; set; }
         public int Tries { get; set; }
+        public List<KeyValuePair<string, string>> ParamsList { get; set; } = new List<KeyValuePair<string, string>>();
     }
 }

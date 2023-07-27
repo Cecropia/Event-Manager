@@ -39,48 +39,61 @@ namespace EventManager.BusinessLogic.Entities.Auth
             Username = authConfig.Username;
             Password = authConfig.Password;
         }
-        public async Task<HttpResponseMessage> SendEvent(Event e, Subscription subscription)
+        public async Task<HttpResponseMessage> SendEvent(Event e, Subscription subscription, List<KeyValuePair<string, string>> paramsList = null)
         {
             Log.Debug("OAuthClientPassword.SendEvent");
 
             HttpResponseMessage httpResponseMessage;
-            HttpResponseMessage response;
-            string jsonResponse;
 
             // obtain access token only if necessary
             if (AccessToken == null)
             {
-                Log.Debug($"OAuthClientPassword.SendEvent: Obtaining access token for {subscription.Subscriber.Name}");
-                using (var client = new HttpClient())
+                if (paramsList != null && paramsList.Any())
                 {
-                    var encodedContent = new FormUrlEncodedContent(new Dictionary<string, string>
-                        {
-                            {"grant_type", "password"},
-                            {"client_id", ClientId},
-                            {"client_secret", ClientSecret},
-                            {"username", Username},
-                            {"password", Password}
-                        }
-                    );
-                    response = await client.PostAsync(LoginEndpoint, encodedContent);
-                    jsonResponse = response.Content.ReadAsStringAsync().Result;
-                }
-
-                Log.Debug($"OAuthClientPassword.SendEvent, Credentials response: {jsonResponse}");
-
-                Dictionary<string, string> values = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
-                if (values.ContainsKey("error"))
-                {
-                    // fail if there was an error
-                    httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                    var accessToken = paramsList.FirstOrDefault(x =>
+                        x.Key.Equals(Constants.AccessTokenKey, StringComparison.InvariantCultureIgnoreCase)).Value;
+                    if (!string.IsNullOrEmpty(accessToken))
                     {
-                        Content = new StringContent("error", Encoding.UTF8, "application/json")
-                    };
-                    return httpResponseMessage;
+                        AccessToken = accessToken;
+                    }
                 }
+                else
+                {
 
-                // otherwise set access token property
-                AccessToken = values["access_token"];
+                    Log.Debug(
+                        $"OAuthClientPassword.SendEvent: Obtaining access token for {subscription.Subscriber.Name}");
+                    string jsonResponse;
+                    using (var client = new HttpClient())
+                    {
+                        var encodedContent = new FormUrlEncodedContent(new Dictionary<string, string>
+                            {
+                                { "grant_type", "password" },
+                                { "client_id", ClientId },
+                                { "client_secret", ClientSecret },
+                                { "username", Username },
+                                { "password", Password }
+                            }
+                        );
+                        HttpResponseMessage response = await client.PostAsync(LoginEndpoint, encodedContent);
+                        jsonResponse = response.Content.ReadAsStringAsync().Result;
+                    }
+
+                    Log.Debug($"OAuthClientPassword.SendEvent, Credentials response: {jsonResponse}");
+
+                    Dictionary<string, string> values = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
+                    if (values.ContainsKey("error"))
+                    {
+                        // fail if there was an error
+                        httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                        {
+                            Content = new StringContent("error", Encoding.UTF8, "application/json")
+                        };
+                        return httpResponseMessage;
+                    }
+
+                    // otherwise set access token property
+                    AccessToken = values["access_token"];
+                }
             }
 
             Log.Debug($"OAuthClientPassword.SendEvent, Using access_token: {AccessToken}");
