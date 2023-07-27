@@ -74,13 +74,13 @@ namespace EventManager.BusinessLogic.Entities.Auth
                                 { "password", Password }
                             }
                         );
-                        var response = await client.PostAsync(LoginEndpoint, encodedContent);
+                        HttpResponseMessage response = await client.PostAsync(LoginEndpoint, encodedContent);
                         jsonResponse = response.Content.ReadAsStringAsync().Result;
                     }
 
                     Log.Debug($"OAuthClientPassword.SendEvent, Credentials response: {jsonResponse}");
 
-                    var values = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
+                    Dictionary<string, string> values = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
                     if (values.ContainsKey("error"))
                     {
                         // fail if there was an error
@@ -99,7 +99,7 @@ namespace EventManager.BusinessLogic.Entities.Auth
             Log.Debug($"OAuthClientPassword.SendEvent, Using access_token: {AccessToken}");
 
             // build request
-            var request = new HttpRequestMessage(subscription.Method, subscription.EndPoint);
+            HttpRequestMessage request = new HttpRequestMessage(subscription.Method, subscription.EndPoint);
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(TypeJson));
             request.Content = new StringContent(e.Payload, Encoding.UTF8, TypeJson);
@@ -113,7 +113,7 @@ namespace EventManager.BusinessLogic.Entities.Auth
 
             Log.Debug($"OAuthClientPassword.SendEvent, StatusCode:  {httpResponseMessage.StatusCode}");
 
-            var responseResult = await httpResponseMessage.Content.ReadAsStringAsync();
+            string responseResult = await httpResponseMessage.Content.ReadAsStringAsync();
 
             // Check for errors: EM should trigger a retry if the response is invalid
             if (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)

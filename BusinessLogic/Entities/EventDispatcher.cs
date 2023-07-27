@@ -45,10 +45,10 @@ namespace EventManager.BusinessLogic.Entities
             // If there is already a synchronous subscription then raise an exception
             if (subscription.Synchronous)
             {
-                var syncSubscription = GetSynchronousSubscription(subscription.EventName);
+                Subscription syncSubscription = GetSynchronousSubscription(subscription.EventName);
                 if (syncSubscription != null)
                 {
-                    var check =
+                    string check =
                         // check appsettings
                         syncSubscription.IsExternal ? "appsettings.json 'EventManager' block" :
                         // check  RegisterLocal methods
@@ -80,12 +80,12 @@ namespace EventManager.BusinessLogic.Entities
         /// <param name="synchronous"></param>
         public void RegisterLocal(string eventName, Func<Event, HttpResponseMessage> callback, bool synchronous = false)
         {
-            var callbacks = new List<Func<Event, HttpResponseMessage>>
+            List<Func<Event, HttpResponseMessage>> callbacks = new List<Func<Event, HttpResponseMessage>>
             {
                 callback
             };
 
-            var subscriber = new Subscriber(callback.Method.Name)
+            Subscriber subscriber = new Subscriber(callback.Method.Name)
             {
                 Config = new SubscriberConfig
                 {
@@ -95,7 +95,7 @@ namespace EventManager.BusinessLogic.Entities
             };
 
 
-            var subscription = new Subscription()
+            Subscription subscription = new Subscription()
             {
                 Subscriber = subscriber,
                 EventName = eventName,
@@ -166,10 +166,10 @@ namespace EventManager.BusinessLogic.Entities
 
             subscriptions = subscriptions ?? new List<Subscription>();
 
-            foreach (var subscription in subscriptions.Where(x => !x.Synchronous))
+            foreach (Subscription subscription in subscriptions.Where(x => !x.Synchronous))
             {
                 Log.Debug($"EventDispatcher.Dispatch: Enqueuing item for subscriber '{subscription.Subscriber.Name}', for event '{e.Name}'");
-                var queueItem = new QueueItem()
+                QueueItem queueItem = new QueueItem()
                 {
                     Guid = Guid.NewGuid(),
                     Event = e,
@@ -181,7 +181,7 @@ namespace EventManager.BusinessLogic.Entities
                 queue.Add(queueItem);
             }
             // move to last because the return will break the other Queue items
-            var synchronousSubscription = subscriptions.FirstOrDefault(s => s.Synchronous);
+            Subscription synchronousSubscription = subscriptions.FirstOrDefault(s => s.Synchronous);
 
             // if there is no synchronous event then just return an empty response with 200 status code
             if (synchronousSubscription == null) return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
