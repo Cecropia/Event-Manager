@@ -65,11 +65,10 @@ namespace EventManager.BusinessLogic.Entities
         /// SendEvent function
         /// </summary>
         /// <param name="_event">Event object</param>
+        /// <param name="paramsList">takes a list of key value pairs used for further configure the behavior of the send event logic</param>
         /// <returns>Boolean</returns>
-        public async Task<HttpResponseMessage> SendEvent(Event _event)
+        public async Task<HttpResponseMessage> SendEvent(Event _event, List<KeyValuePair<string, string>> paramsList = null)
         {
-            HttpResponseMessage httpResponseMessage;
-
             // if the event `isExternal` then send it to the external recipient, otherwise
             // route it to the appropriate internal handler
             if (this.IsExternal)
@@ -79,48 +78,46 @@ namespace EventManager.BusinessLogic.Entities
                 var specificSubscription = this;
 
                 // if it is external then also update the URL (if necessary)
-                if (_event.UrlTemplateValues != null && _event.UrlTemplateValues.Count > 0)
-                {
-                    // set specificSubscription to be a clone of `this` so that we don't affect `this`'s
-                    // values
-                    specificSubscription = (Subscription)this.MemberwiseClone();
+                if (_event.UrlTemplateValues == null || _event.UrlTemplateValues.Count <= 0)
+                    return await this.Auth.SendEvent(_event, specificSubscription);
+                // set specificSubscription to be a clone of `this` so that we don't affect `this`'s
+                // values
+                specificSubscription = (Subscription)this.MemberwiseClone();
 
-                    specificSubscription.EndPoint = this.ApplyTemplateValuesToString(
-                        specificSubscription.EndPoint,
-                        _event.UrlTemplateValues
-                    );
-                }
+                specificSubscription.EndPoint = this.ApplyTemplateValuesToString(
+                    specificSubscription.EndPoint,
+                    _event.UrlTemplateValues
+                );
 
-                return await this.Auth.SendEvent(_event, specificSubscription);
+                return await this.Auth.SendEvent(_event, specificSubscription, paramsList);
             }
-            else
+
+            Log.Debug("Subscription.SendEvent: isExternal false");
+            HttpResponseMessage httpResponseMessage;
+            try
             {
-                Log.Debug("Subscription.SendEvent: isExternal false");
-                try
+                foreach (var callback in CallBacks)
                 {
-                    foreach (var callback in CallBacks)
+                    // if the subscription is synchronous then it should only have one callback
+                    // so we're safe returning its response here
+                    if (this.Synchronous)
                     {
-                        // if the subscription is synchronous then it should only have one callback
-                        // so we're safe returning its response here
-                        if (this.Synchronous)
-                        {
-                            return callback.Invoke(_event);
-                        }
-
-                        callback.Invoke(_event);
-
-                        //TODO Handle async actions
+                        return callback.Invoke(_event);
                     }
-                    string SerializedString = "true";
-                    httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(SerializedString, Encoding.UTF8, "application/json") };
-                    return httpResponseMessage;
+
+                    callback.Invoke(_event);
+
+                    //TODO Handle async actions
                 }
-                catch (Exception)
-                {
-                    string SerializedString = "false";
-                    httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent(SerializedString, Encoding.UTF8, "application/json") };
-                    return httpResponseMessage;
-                }
+                const string serializedString = "true";
+                httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(serializedString, Encoding.UTF8, "application/json") };
+                return httpResponseMessage;
+            }
+            catch (Exception)
+            {
+                const string serializedString = "false";
+                httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent(serializedString, Encoding.UTF8, "application/json") };
+                return httpResponseMessage;
             }
         }
     }

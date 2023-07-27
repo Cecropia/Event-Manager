@@ -106,7 +106,7 @@ namespace EventManager.BusinessLogic.Entities
                 if (++item.Tries <= subscriberConfig.MaxTries)
                 {
                     item.LastTry = DateTime.Now;
-                    HttpResponseMessage httpResponseMessage = await item.Subscription.SendEvent(item.Event);
+                    HttpResponseMessage httpResponseMessage = await item.Subscription.SendEvent(item.Event, item.ParamsList);
 
                     if (httpResponseMessage.IsSuccessStatusCode)
                     {
@@ -118,8 +118,7 @@ namespace EventManager.BusinessLogic.Entities
 
                         EventDispatcher.Instance.SimpleDispatch(
                             eventName: EventManagerConstants.ReplyEventPrefix + item.Event.Name,
-                            eventPayload: contents
-                        );
+                            eventPayload: contents, paramsList: item.ParamsList);
 
                         /////////////////////////////////
 

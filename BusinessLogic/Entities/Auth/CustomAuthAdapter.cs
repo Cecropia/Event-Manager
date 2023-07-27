@@ -30,7 +30,7 @@ namespace EventManager.BusinessLogic.Entities.Auth
         {
             this.authConfig = authConfig;
         }
-        public async Task<HttpResponseMessage> SendEvent(Event e, Subscription subscription)
+        public async Task<HttpResponseMessage> SendEvent(Event e, Subscription subscription, List<KeyValuePair<string, string>> paramsList = null)
         {
             Log.Debug("CustomAuthAdapter.SendEvent");
 

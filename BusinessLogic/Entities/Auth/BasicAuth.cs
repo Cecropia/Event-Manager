@@ -26,7 +26,7 @@ namespace EventManager.BusinessLogic.Entities.Auth
             Username = authConfig.Username;
             Password = authConfig.Password;
         }
-        public async Task<HttpResponseMessage> SendEvent(Event e, Subscription subscription)
+        public async Task<HttpResponseMessage> SendEvent(Event e, Subscription subscription, List<KeyValuePair<string, string>> paramsList = null)
         {
             Log.Debug("BasicAuth.SendEvent");
 
