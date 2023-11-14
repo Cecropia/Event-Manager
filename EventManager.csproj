@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;</TargetFrameworks>
     <RootNamespace>EventManager</RootNamespace>
-    <PackageId>Cecropia.Utilities.EventManager</PackageId>
+    <PackageId>Multiplied.Solutions.Utilities.EventManager</PackageId>
     <Version>3.0.5</Version>
-    <Authors>Cecropia</Authors>
-    <Company>Cecropia</Company>
+    <Authors>Multiplied Solutions</Authors>
+    <Company>Multiplied Solutions</Company>
     <!-- <GeneratePackageOnBuild>true</GeneratePackageOnBuild> -->
   </PropertyGroup>
 
